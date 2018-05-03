@@ -162,6 +162,12 @@ void ONNC_RUNTIME_softmax_float(void * restrict onnc_runtime_context,
 }
 
 void ONNC_RUNTIME_reshape_float(void * restrict onnc_runtime_context,
-                                const float * restrict X,
-                                float * restrict Y) {
+                                const float * restrict data,
+                                int32_t ndim, const int32_t * restrict X_dim,
+                                float * restrict reshaped) {
+  int64_t size = 1;
+  for (int32_t i = 0; i < ndim; ++i) {
+    size *= X_dim[i];
+  }
+  memcpy(reshaped, data, size);
 }
