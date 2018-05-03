@@ -3,7 +3,7 @@ obj = $(src:.c=.o)
 dep = $(obj:.o=.d)  # one dependency file for each source
 
 CFLAGS = -std=gnu11 -Wall -Werror
-LDFLAGS =
+LDFLAGS = -lm
 
 onnc-runtime: $(obj)
 	$(CC) -o $@ $^ $(LDFLAGS)

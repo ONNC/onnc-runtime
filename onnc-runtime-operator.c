@@ -2,6 +2,8 @@
 
 #include <assert.h>
 #include <string.h>
+#include <float.h>
+#include <math.h>
 
 static inline bool next_dim(int32_t ndim, int32_t * restrict dim,
                             const int32_t * restrict dim_max) {
@@ -65,7 +67,7 @@ void ONNC_RUNTIME_conv_float(void * restrict onnc_runtime_context,
   while (next_dim(ndim, o_dim, Y_dim)) {
     int32_t center_dim[ndim];
     center_dim[0] = o_dim[0]; // N
-    for (uint32_t i = 2; i < ndim; ++i) {
+    for (int32_t i = 2; i < ndim; ++i) {
       center_dim[i] = o_dim[i] * strides[i - 2] - pads[i - 2];
     }
 
@@ -81,7 +83,7 @@ void ONNC_RUNTIME_conv_float(void * restrict onnc_runtime_context,
 
       int32_t i_dim[ndim];
       i_dim[0] = center_dim[0]; // N
-      for (uint32_t i = 2; i < ndim; ++i) {
+      for (int32_t i = 2; i < ndim; ++i) {
         i_dim[i] = center_dim[i] + w_dim[i] * dilations[i - 2];
       }
       for (int32_t channel = 0; channel < C; ++channel) {
@@ -99,3 +101,67 @@ void ONNC_RUNTIME_conv_float(void * restrict onnc_runtime_context,
   } // while o_dim
 }
 
+
+void ONNC_RUNTIME_maxpool_float(void * restrict onnc_runtime_context,
+                                const float * restrict X,
+                                int32_t ndim, const int32_t * restrict X_dim,
+                                float * restrict Y,
+                                const int32_t * restrict Y_dim,
+                                int32_t auto_pad,
+                                const int32_t * restrict kernel_shape,
+                                const int32_t * restrict pads,
+                                const int32_t * restrict strides) {
+}
+
+void ONNC_RUNTIME_relu_float(void * restrict onnc_runtime_context,
+                             const float * restrict X,
+                             int32_t ndim, const int32_t * restrict X_dim,
+                             float * restrict Y) {
+  int64_t size = 1;
+  for (int32_t i = 0; i < ndim; ++i) {
+    size *= X_dim[i];
+  }
+  for (int64_t i = 0; i < size; ++i) {
+    Y[i] = X[i] < 0 ? 0 : X[i];
+  }
+}
+
+void ONNC_RUNTIME_softmax_float(void * restrict onnc_runtime_context,
+                                const float * restrict input,
+                                int32_t ndim, const int32_t * restrict input_dim,
+                                int32_t axis,
+                                float * restrict output) {
+  int64_t N = 1;
+  for (int32_t i = 0; i < axis; ++i) {
+    N *= input_dim[i];
+  }
+  int64_t D = 1;
+  for (int32_t i = axis; i < ndim; ++i) {
+    D *= input_dim[i];
+  }
+  for (int64_t i = 0; i < N; ++i) { // Y = exp(X - max(X)) / sum(exp(X - max(X)))
+    const float *X = input + i * D;
+    float *Y = output + i * D;
+
+    float max = -FLT_MAX;
+    for (int64_t j = 0; j < D; ++j) {
+      max = fmaxf(X[j], max);
+    }
+
+    float sum = 0.f;
+    for (int64_t j = 0; j < D; ++j) {
+      float v = expf(X[j] - max);
+      sum += v;
+      Y[j] = v;
+    }
+
+    for (int64_t j = 0; j < D; ++j) {
+      Y[j] /= sum;
+    }
+  }
+}
+
+void ONNC_RUNTIME_reshape_float(void * restrict onnc_runtime_context,
+                                const float * restrict X,
+                                float * restrict Y) {
+}

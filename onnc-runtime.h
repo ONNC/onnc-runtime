@@ -53,8 +53,39 @@ void ONNC_RUNTIME_conv_float(void * restrict onnc_runtime_context,
                              const int32_t * restrict pads,
                              const int32_t * restrict strides);
 
-void ONNC_RUNTIME_gemm_float(void * restrict onnc_runtime_context);
-void ONNC_RUNTIME_maxpool_float(void * restrict onnc_runtime_context);
-void ONNC_RUNTIME_relu_float(void * restrict onnc_runtime_context);
-void ONNC_RUNTIME_softmax_float(void * restrict onnc_runtime_context);
-void ONNC_RUNTIME_reshape_float(void * restrict onnc_runtime_context);
+void ONNC_RUNTIME_gemm_float(void * restrict onnc_runtime_context,
+                             const float * restrict A,
+                             const float * restrict B,
+                             const float * restrict C,
+                             int32_t M, int32_t K, int32_t N,
+                             float * restrict Y,
+                             float alpha,
+                             float beta,
+                             int32_t broadcast,
+                             int32_t transA,
+                             int32_t transB);
+
+void ONNC_RUNTIME_maxpool_float(void * restrict onnc_runtime_context,
+                                const float * restrict X,
+                                int32_t ndim, const int32_t * restrict X_dim,
+                                float * restrict Y,
+                                const int32_t * restrict Y_dim,
+                                int32_t auto_pad,
+                                const int32_t * restrict kernel_shape,
+                                const int32_t * restrict pads,
+                                const int32_t * restrict strides);
+
+void ONNC_RUNTIME_relu_float(void * restrict onnc_runtime_context,
+                             const float * restrict X,
+                             int32_t ndim, const int32_t * restrict X_dim,
+                             float * restrict Y);
+
+void ONNC_RUNTIME_softmax_float(void * restrict onnc_runtime_context,
+                                const float * restrict X,
+                                int32_t ndim, const int32_t * restrict X_dim,
+                                int32_t axis,
+                                float * restrict Y);
+
+void ONNC_RUNTIME_reshape_float(void * restrict onnc_runtime_context,
+                                const float * restrict X,
+                                float * restrict Y);
