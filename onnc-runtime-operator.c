@@ -111,6 +111,31 @@ void ONNC_RUNTIME_maxpool_float(void * restrict onnc_runtime_context,
                                 const int32_t * restrict kernel_shape,
                                 const int32_t * restrict pads,
                                 const int32_t * restrict strides) {
+  int32_t o_dim[ndim];
+  memset(o_dim, 0, sizeof(o_dim));
+  while (next_dim(ndim, o_dim, Y_dim)) {
+    int32_t center_dim[ndim];
+    center_dim[0] = o_dim[0]; // N
+    center_dim[1] = o_dim[1]; // C
+    for (int32_t i = 2; i < ndim; ++i) {
+      center_dim[i] = o_dim[i] * strides[i - 2] - pads[i - 2];
+    }
+
+    float max = -FLT_MAX;
+
+    int32_t k_dim[ndim - 2];
+    memset(k_dim, 0, sizeof(k_dim));
+    while (next_dim(ndim - 2, k_dim, kernel_shape)) {
+      int32_t i_dim[ndim];
+      for (int32_t i = 2; i < ndim; ++i) {
+        i_dim[i] = center_dim[i] + k_dim[i];
+      }
+      float input = get_value_or_zero(ndim, X_dim, X, i_dim);
+      max = fmaxf(input, max);
+    } // while k_dim
+
+    Y[dim_to_offset(ndim, o_dim, Y_dim)] = max;
+  } // while o_dim
 }
 
 void ONNC_RUNTIME_relu_float(void * restrict onnc_runtime_context,
