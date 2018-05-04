@@ -91,3 +91,12 @@ void ONNC_RUNTIME_reshape_float(void * restrict onnc_runtime_context,
                                 const float * restrict data,
                                 int32_t ndim, const int32_t * restrict X_dim,
                                 float * restrict reshaped);
+
+void ONNC_RUNTIME_LRN_float(void * restrict onnc_runtime_context,
+                            const float * restrict X,
+                            int32_t ndim, const int32_t * restrict X_dim,
+                            float alpha,
+                            float beta,
+                            float bias,
+                            int32_t size,
+                            float * restrict Y);

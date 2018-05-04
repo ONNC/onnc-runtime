@@ -223,3 +223,41 @@ void ONNC_RUNTIME_reshape_float(void * restrict onnc_runtime_context,
   }
   memcpy(reshaped, data, size);
 }
+
+
+void ONNC_RUNTIME_LRN_float(void * restrict onnc_runtime_context,
+                            const float * restrict X,
+                            int32_t ndim, const int32_t * restrict X_dim,
+                            float alpha,
+                            float beta,
+                            float bias,
+                            int32_t size,
+                            float * restrict Y) {
+  // XXX: WFT ONNX.
+  // (bias+(alpha/size)*sum(xi^2 for every xi in the local region))^beta
+  float alpha_over_size = alpha / size;
+
+  int64_t N = X_dim[0];
+  int64_t C = X_dim[1];
+  int64_t len = 1;
+  for (int32_t i = 2; i < ndim; ++i) {
+    len *= X_dim[i];
+  }
+  for (int64_t n = 0; n < N; ++n) {
+    for (int64_t c = 0; c < C; ++c) {
+      for (int64_t i = 0; i < len; ++i) {
+        int64_t start = c - (size/2);
+        if (start < 0) { start = 0; }
+        int64_t end = c + (size/2);
+        if (end > C) { end = C; }
+
+        float sum = 0.f;
+        for (int64_t j = start; j < end; ++j) {
+          float value = X[(n*C + j)*len + i];
+          sum += value * value;
+        }
+        Y[(n*C + c)*len + i] = powf(bias + alpha_over_size * sum, -beta);
+      }
+    }
+  }
+}
