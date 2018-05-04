@@ -101,6 +101,33 @@ void ONNC_RUNTIME_conv_float(void * restrict onnc_runtime_context,
   } // while o_dim
 }
 
+void ONNC_RUNTIME_gemm_float(void * restrict onnc_runtime_context,
+                             const float * restrict A,
+                             const float * restrict B,
+                             const float * restrict C,
+                             int32_t M, int32_t K, int32_t N,
+                             float * restrict Y,
+                             int32_t ndim, const int32_t * restrict Y_dim,
+                             float alpha,
+                             float beta,
+                             int32_t broadcast,
+                             int32_t transA,
+                             int32_t transB) {
+  // TODO: broadcast
+  // A: M x K
+  // B: K x N
+  // C: M x N
+  for (int32_t i = 0; i < M; ++i) {
+    for (int32_t j = 0; j < N; ++j) {
+      float sum = 0.f;
+      for (int32_t k = 0; k < K; ++k) {
+        sum += (transA ? (k * M + i) : (i * K + k))
+            * (transB ? (j * K + k) : (k * N + j));
+      }
+      Y[i * N + j] = sum * alpha + C[i * N + j] * beta;
+    }
+  }
+}
 
 void ONNC_RUNTIME_maxpool_float(void * restrict onnc_runtime_context,
                                 const float * restrict X,
