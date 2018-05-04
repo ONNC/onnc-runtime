@@ -14,7 +14,7 @@ typedef struct ONNC_RUNTIME_Context {
 } Context;
 
 
-void *ONNC_RUNTIME_internal_allocate_memory(void *context, size_t num, size_t size);
+void *ONNC_RUNTIME_internal_allocate_memory(void *onnc_runtime_context, size_t num, size_t size);
 
 typedef struct ONNC_RUNTIME_Tensor_offset TensorOffset;
 typedef struct ONNC_RUNTIME_Tensor_offset_table TensorOffsetTable;

@@ -79,7 +79,7 @@ void *ONNC_RUNTIME_load_weight(void *onnc_runtime_context, uint32_t weight_index
   return context->weight_mmap_addr + ttable->tensor_offsets[weight_index].offset;
 }
 
-void *ONNC_RUNTIME_internal_allocate_memory(void *context, size_t num, size_t size) {
+void *ONNC_RUNTIME_internal_allocate_memory(void *onnc_runtime_context, size_t num, size_t size) {
   Context *context = (Context *)onnc_runtime_context;
   void *mem = calloc(num , size);
   context->mem[context->mem_i] = mem;
