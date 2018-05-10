@@ -11,8 +11,8 @@ struct ONNC_RUNTIME_Tensor_offset {
 #define ONNC_RUNTIME_TENSOR_FILE_MAGIC ".TSR"
 
 struct ONNC_RUNTIME_Tensor_offset_table {
-  uint8_t magic[4];                                    /* Tensor File magic number. */
-  uint32_t number_of_tensors;
+  uint8_t magic[8];                                    /* Tensor File magic number. */
+  uint64_t number_of_tensors;
   struct ONNC_RUNTIME_Tensor_offset tensor_offsets[];
 };
 
@@ -56,10 +56,11 @@ void ONNC_RUNTIME_conv_float(void * restrict onnc_runtime_context,
 void ONNC_RUNTIME_gemm_float(void * restrict onnc_runtime_context,
                              const float * restrict A,
                              const float * restrict B,
-                             const float * restrict C,
                              int32_t M, int32_t K, int32_t N,
+                             const float * restrict C,
+                             int32_t ncdim, const int32_t * restrict C_dim,
                              float * restrict Y,
-                             int32_t ndim, const int32_t * restrict Y_dim,
+                             int32_t nydim, const int32_t * restrict Y_dim,
                              float alpha,
                              float beta,
                              int32_t broadcast,
@@ -82,17 +83,17 @@ void ONNC_RUNTIME_relu_float(void * restrict onnc_runtime_context,
                              float * restrict Y);
 
 void ONNC_RUNTIME_softmax_float(void * restrict onnc_runtime_context,
-                                const float * restrict X,
-                                int32_t ndim, const int32_t * restrict X_dim,
+                                const float * restrict input,
+                                int32_t ndim, const int32_t * restrict input_dim,
                                 int32_t axis,
-                                float * restrict Y);
+                                float * restrict output);
 
 void ONNC_RUNTIME_reshape_float(void * restrict onnc_runtime_context,
                                 const float * restrict data,
                                 int32_t ndim, const int32_t * restrict X_dim,
                                 float * restrict reshaped);
 
-void ONNC_RUNTIME_LRN_float(void * restrict onnc_runtime_context,
+void ONNC_RUNTIME_lrn_float(void * restrict onnc_runtime_context,
                             const float * restrict X,
                             int32_t ndim, const int32_t * restrict X_dim,
                             float alpha,

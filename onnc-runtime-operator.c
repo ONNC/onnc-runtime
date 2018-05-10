@@ -5,6 +5,9 @@
 #include <float.h>
 #include <math.h>
 
+#include <stdio.h>
+#include <inttypes.h>
+
 static inline bool next_dim(int32_t ndim, int32_t * restrict dim,
                             const int32_t * restrict dim_max) {
   do {
@@ -27,7 +30,7 @@ static inline int64_t dim_to_offset(int32_t ndim, const int32_t * restrict dim,
   int64_t step = 1;
   for (int32_t i = ndim - 1; i >= 0; --i) {
     offset += dim[i] * step;
-    step += dim_max[i];
+    step *= dim_max[i];
   }
   return offset;
 }
@@ -43,6 +46,14 @@ static inline float get_value_or_zero(int32_t ndim, const int32_t * restrict dim
   return value[dim_to_offset(ndim, dim, dim_max)];
 }
 
+static inline void dump_dim(int32_t ndim, int32_t * restrict dim) {
+  fprintf(stderr, "  ndim: %"PRId32", X_dim: [", ndim);
+  for (int i = 0; i < ndim; ++i) {
+    fprintf(stderr, " %"PRId32, dim[i]);
+  }
+  fprintf(stderr, "]\n");
+}
+
 
 void ONNC_RUNTIME_conv_float(void * restrict onnc_runtime_context,
                              const float * restrict X, const float * restrict W,
@@ -56,19 +67,61 @@ void ONNC_RUNTIME_conv_float(void * restrict onnc_runtime_context,
                              const int32_t * restrict kernel_shape,
                              const int32_t * restrict pads,
                              const int32_t * restrict strides) {
-  // TODO: auto_pad, group, B (bias)
+  // TODO: auto_pad
 
-  assert(X_dim[1] == W_dim[1]); // C
-  int32_t C = X_dim[1];
+  fprintf(stderr, "Conv\n");
+  fprintf(stderr, "  X: %p, W: %p\n", X, W);
+  fprintf(stderr, "  ndim: %"PRId32", X_dim: %p [", ndim, X_dim);
+  for (int i = 0; i < ndim; ++i) {
+    fprintf(stderr, " %"PRId32, X_dim[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  W_dim: %p [", W_dim);
+  for (int i = 0; i < ndim; ++i) {
+    fprintf(stderr, " %"PRId32, W_dim[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  B: %p, Y: %p\n", B, Y);
+  fprintf(stderr, "  Y_dim: %p [", Y_dim);
+  for (int i = 0; i < ndim; ++i) {
+    fprintf(stderr, " %"PRId32, Y_dim[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  auto_pad: %"PRId32"\n", auto_pad);
+  fprintf(stderr, "  dilations: %p [", dilations);
+  for (int i = 0; i < ndim - 2; ++i) {
+    fprintf(stderr, " %"PRId32, dilations[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  group: %"PRId32"\n", group);
+  fprintf(stderr, "  kernel_shape: %p [", kernel_shape);
+  if (kernel_shape != NULL) {
+    for (int i = 0; i < ndim - 2; ++i) {
+      fprintf(stderr, " %"PRId32, kernel_shape[i]);
+    }
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  pads: %p [", pads);
+  for (int i = 0; i < (ndim - 2) * 2; ++i) {
+    fprintf(stderr, " %"PRId32, pads[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  strides: %p [", strides);
+  for (int i = 0; i < ndim - 2; ++i) {
+    fprintf(stderr, " %"PRId32, strides[i]);
+  }
+  fprintf(stderr, "]\n");
+  int32_t M = W_dim[0];
+  int32_t C = W_dim[1];
 
   // TODO: type
   int32_t o_dim[ndim];
   memset(o_dim, 0, sizeof(o_dim));
-  while (next_dim(ndim, o_dim, Y_dim)) {
-    int32_t center_dim[ndim];
-    center_dim[0] = o_dim[0]; // N
+  do { // while o_dim
+    int32_t base_dim[ndim];
+    base_dim[0] = o_dim[0]; // N
     for (int32_t i = 2; i < ndim; ++i) {
-      center_dim[i] = o_dim[i] * strides[i - 2] - pads[i - 2];
+      base_dim[i] = o_dim[i] * strides[i - 2] - pads[i - 2];
     }
 
     float sum = 0.f;
@@ -76,18 +129,18 @@ void ONNC_RUNTIME_conv_float(void * restrict onnc_runtime_context,
     int32_t w_dim[ndim];
     memset(w_dim, 0, sizeof(w_dim));
     w_dim[0] = o_dim[1]; // M;
-    while (next_dim(ndim, w_dim, W_dim)) {
+    do { // while w_dim
       if (w_dim[1] == 1) { // all D1 ~ Dn done.
         break;
       }
 
       int32_t i_dim[ndim];
-      i_dim[0] = center_dim[0]; // N
+      i_dim[0] = base_dim[0]; // N
       for (int32_t i = 2; i < ndim; ++i) {
-        i_dim[i] = center_dim[i] + w_dim[i] * dilations[i - 2];
+        i_dim[i] = base_dim[i] + w_dim[i] * dilations[i - 2];
       }
       for (int32_t channel = 0; channel < C; ++channel) {
-        i_dim[1] = channel; // C
+        i_dim[1] = (o_dim[1] * group / M) * C + channel; // input channel <-group-> output channel
         w_dim[1] = channel; // C
 
         float input = get_value_or_zero(ndim, X_dim, X, i_dim);
@@ -95,24 +148,40 @@ void ONNC_RUNTIME_conv_float(void * restrict onnc_runtime_context,
         sum += input * weight;
       }
       w_dim[1] = 0; // reset C
-    } // while w_dim
+    } while (next_dim(ndim, w_dim, W_dim));
 
+    if (B != NULL) {
+      sum += B[o_dim[1]];
+    }
     Y[dim_to_offset(ndim, o_dim, Y_dim)] = sum;
-  } // while o_dim
+  } while (next_dim(ndim, o_dim, Y_dim));
 }
 
 void ONNC_RUNTIME_gemm_float(void * restrict onnc_runtime_context,
                              const float * restrict A,
                              const float * restrict B,
-                             const float * restrict C,
                              int32_t M, int32_t K, int32_t N,
+                             const float * restrict C,
+                             int32_t ncdim, const int32_t * restrict C_dim,
                              float * restrict Y,
-                             int32_t ndim, const int32_t * restrict Y_dim,
+                             int32_t nydim, const int32_t * restrict Y_dim,
                              float alpha,
                              float beta,
                              int32_t broadcast,
                              int32_t transA,
                              int32_t transB) {
+  fprintf(stderr, "Gemm\n");
+  fprintf(stderr, "  A: %p, B: %p\n", A, B);
+  fprintf(stderr, "  M: %"PRId32" K: %"PRId32" N: %"PRId32"\n", M, K, N);
+  fprintf(stderr, "  C: %p\n", C);
+  fprintf(stderr, "  ncdim: %"PRId32", C_dim: %p\n", ncdim, C_dim);
+  fprintf(stderr, "  Y: %p\n", Y);
+  fprintf(stderr, "  nydim: %"PRId32", Y_dim: %p\n", nydim, Y_dim);
+  fprintf(stderr, "  alpha: %f\n", alpha);
+  fprintf(stderr, "  beta: %f\n", beta);
+  fprintf(stderr, "  broadcast: %"PRId32"\n", broadcast);
+  fprintf(stderr, "  transA: %"PRId32"\n", transA);
+  fprintf(stderr, "  transB: %"PRId32"\n", transB);
   // TODO: broadcast
   // A: M x K
   // B: K x N
@@ -121,8 +190,8 @@ void ONNC_RUNTIME_gemm_float(void * restrict onnc_runtime_context,
     for (int32_t j = 0; j < N; ++j) {
       float sum = 0.f;
       for (int32_t k = 0; k < K; ++k) {
-        sum += (transA ? (k * M + i) : (i * K + k))
-            * (transB ? (j * K + k) : (k * N + j));
+        sum += A[(transA ? (k * M + i) : (i * K + k))]
+            * B[(transB ? (j * K + k) : (k * N + j))];
       }
       Y[i * N + j] = sum * alpha + C[i * N + j] * beta;
     }
@@ -138,44 +207,84 @@ void ONNC_RUNTIME_maxpool_float(void * restrict onnc_runtime_context,
                                 const int32_t * restrict kernel_shape,
                                 const int32_t * restrict pads,
                                 const int32_t * restrict strides) {
+  // TODO auto_pad
+  fprintf(stderr, "MaxPool\n");
+  fprintf(stderr, "  X: %p\n", X);
+  fprintf(stderr, "  ndim: %"PRId32", X_dim: %p [", ndim, X_dim);
+  for (int i = 0; i < ndim; ++i) {
+    fprintf(stderr, " %"PRId32, X_dim[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  Y: %p\n", Y);
+  fprintf(stderr, "  Y_dim: %p [", Y_dim);
+  for (int i = 0; i < ndim; ++i) {
+    fprintf(stderr, " %"PRId32, Y_dim[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  auto_pad: %"PRId32"\n", auto_pad);
+  fprintf(stderr, "  kernel_shape: %p [", kernel_shape);
+  for (int i = 0; i < ndim - 2; ++i) {
+    fprintf(stderr, " %"PRId32, kernel_shape[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  pads: %p [", pads);
+  for (int i = 0; i < (ndim - 2) * 2; ++i) {
+    fprintf(stderr, " %"PRId32, pads[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  strides: %p [", strides);
+  for (int i = 0; i < ndim - 2; ++i) {
+    fprintf(stderr, " %"PRId32, strides[i]);
+  }
+  fprintf(stderr, "]\n");
   int32_t o_dim[ndim];
   memset(o_dim, 0, sizeof(o_dim));
-  while (next_dim(ndim, o_dim, Y_dim)) {
-    int32_t center_dim[ndim];
-    center_dim[0] = o_dim[0]; // N
-    center_dim[1] = o_dim[1]; // C
+  do { // while o_dim
+    int32_t base_dim[ndim];
     for (int32_t i = 2; i < ndim; ++i) {
-      center_dim[i] = o_dim[i] * strides[i - 2] - pads[i - 2];
+      base_dim[i] = o_dim[i] * strides[i - 2] - pads[i - 2];
     }
 
     float max = -FLT_MAX;
 
     int32_t k_dim[ndim - 2];
     memset(k_dim, 0, sizeof(k_dim));
-    while (next_dim(ndim - 2, k_dim, kernel_shape)) {
+    do { // while k_dim
       int32_t i_dim[ndim];
+      i_dim[0] = o_dim[0]; // N
+      i_dim[1] = o_dim[1]; // C
       for (int32_t i = 2; i < ndim; ++i) {
-        i_dim[i] = center_dim[i] + k_dim[i];
+        i_dim[i] = base_dim[i] + k_dim[i - 2];
       }
       float input = get_value_or_zero(ndim, X_dim, X, i_dim);
       max = fmaxf(input, max);
-    } // while k_dim
+    } while (next_dim(ndim - 2, k_dim, kernel_shape));
 
     Y[dim_to_offset(ndim, o_dim, Y_dim)] = max;
-  } // while o_dim
+  } while (next_dim(ndim, o_dim, Y_dim));
 }
 
 void ONNC_RUNTIME_relu_float(void * restrict onnc_runtime_context,
                              const float * restrict X,
                              int32_t ndim, const int32_t * restrict X_dim,
                              float * restrict Y) {
+  fprintf(stderr, "Relu\n");
+  fprintf(stderr, "  X: %p\n", X);
+  fprintf(stderr, "  ndim: %"PRId32", X_dim: %p\n", ndim, X_dim);
+  fprintf(stderr, "  Y: %p\n", Y);
   int64_t size = 1;
   for (int32_t i = 0; i < ndim; ++i) {
     size *= X_dim[i];
   }
+  fprintf(stderr, "  X[0]: %f\n", X[0]);
+  fprintf(stderr, "  X[1]: %f\n", X[1]);
+  fprintf(stderr, "  X[2]: %f\n", X[2]);
   for (int64_t i = 0; i < size; ++i) {
-    Y[i] = X[i] < 0 ? 0 : X[i];
+    Y[i] = X[i] < 0.f ? 0.f : X[i];
   }
+  fprintf(stderr, "  Y[0]: %f\n", Y[0]);
+  fprintf(stderr, "  Y[1]: %f\n", Y[1]);
+  fprintf(stderr, "  Y[2]: %f\n", Y[2]);
 }
 
 void ONNC_RUNTIME_softmax_float(void * restrict onnc_runtime_context,
@@ -183,6 +292,15 @@ void ONNC_RUNTIME_softmax_float(void * restrict onnc_runtime_context,
                                 int32_t ndim, const int32_t * restrict input_dim,
                                 int32_t axis,
                                 float * restrict output) {
+  fprintf(stderr, "Softmax\n");
+  fprintf(stderr, "  input %p\n", input);
+  fprintf(stderr, "  ndim: %"PRId32", input_dim: %p [", ndim, input_dim);
+  for (int i = 0; i < ndim; ++i) {
+    fprintf(stderr, " %"PRId32, input_dim[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  axis: %"PRId32"\n", axis);
+  fprintf(stderr, "  output %p\n", output);
   int64_t N = 1;
   for (int32_t i = 0; i < axis; ++i) {
     N *= input_dim[i];
@@ -191,6 +309,10 @@ void ONNC_RUNTIME_softmax_float(void * restrict onnc_runtime_context,
   for (int32_t i = axis; i < ndim; ++i) {
     D *= input_dim[i];
   }
+  fprintf(stderr, "  N: %"PRId64" D: %"PRId64"\n", N, D);
+  fprintf(stderr, "  input[0]: %f\n", input[0]);
+  fprintf(stderr, "  input[1]: %f\n", input[1]);
+  fprintf(stderr, "  input[2]: %f\n", input[2]);
   for (int64_t i = 0; i < N; ++i) { // Y = exp(X - max(X)) / sum(exp(X - max(X)))
     const float *X = input + i * D;
     float *Y = output + i * D;
@@ -211,6 +333,9 @@ void ONNC_RUNTIME_softmax_float(void * restrict onnc_runtime_context,
       Y[j] /= sum;
     }
   }
+  fprintf(stderr, "  output[0]: %f\n", output[0]);
+  fprintf(stderr, "  output[1]: %f\n", output[1]);
+  fprintf(stderr, "  output[2]: %f\n", output[2]);
 }
 
 void ONNC_RUNTIME_reshape_float(void * restrict onnc_runtime_context,
@@ -225,7 +350,7 @@ void ONNC_RUNTIME_reshape_float(void * restrict onnc_runtime_context,
 }
 
 
-void ONNC_RUNTIME_LRN_float(void * restrict onnc_runtime_context,
+void ONNC_RUNTIME_lrn_float(void * restrict onnc_runtime_context,
                             const float * restrict X,
                             int32_t ndim, const int32_t * restrict X_dim,
                             float alpha,
@@ -233,6 +358,14 @@ void ONNC_RUNTIME_LRN_float(void * restrict onnc_runtime_context,
                             float bias,
                             int32_t size,
                             float * restrict Y) {
+  fprintf(stderr, "LRN\n");
+  fprintf(stderr, "  X: %p\n", X);
+  fprintf(stderr, "  ndim: %"PRId32", X_dim: %p\n", ndim, X_dim);
+  fprintf(stderr, "  alpha: %f\n", alpha);
+  fprintf(stderr, "  beta: %f\n", beta);
+  fprintf(stderr, "  bias: %f\n", bias);
+  fprintf(stderr, "  size: %"PRId32"\n", size);
+  fprintf(stderr, "  Y: %p\n", Y);
   // XXX: WFT ONNX.
   // (bias+(alpha/size)*sum(xi^2 for every xi in the local region))^beta
   float alpha_over_size = alpha / size;

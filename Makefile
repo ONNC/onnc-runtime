@@ -2,11 +2,15 @@ src = $(wildcard *.c)
 obj = $(src:.c=.o)
 dep = $(obj:.o=.d)  # one dependency file for each source
 
-CFLAGS = -std=gnu11 -Wall -Werror
+CFLAGS = -std=gnu11 -Wall -Werror -fPIC
+CXXFLAGS = -std=c++14 -Wall -Werror -fPIC
 LDFLAGS = -lm
 
-onnc-runtime: $(obj)
-	$(CC) -o $@ $^ $(LDFLAGS)
+onnc-runtime: libonnc-runtime.so main.o
+	$(CXX) -o $@ main.cpp $(CXXFLAGS) $(LDFLAGS) -Wl,-rpath,. -L. -lonnc-runtime
+
+libonnc-runtime.so: $(obj)
+	$(CC) -o $@ $^ $(LDFLAGS) -shared
 
 -include $(dep)   # include all dep files in the makefile
 
@@ -15,7 +19,7 @@ onnc-runtime: $(obj)
 
 .PHONY: clean
 clean:
-	rm -f $(obj) onnc-runtime
+	rm -f $(obj) main.o onnc-runtime libonnc-runtime.so
 
 .PHONY: cleandep
 cleandep:

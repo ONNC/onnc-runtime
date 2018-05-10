@@ -39,11 +39,21 @@ void *ONNC_RUNTIME_init_runtime(const char *onnx_weight_file_name) {
   }
 
   // TODO: Check file magic.
+  if (strncmp(context->weight_mmap_addr, ONNC_RUNTIME_TENSOR_FILE_MAGIC, 4) != 0) {
+    fprintf(stderr, "Invalid tensor file. Magic does not match: \"%.4s\" \"%.4s\".",
+            ONNC_RUNTIME_TENSOR_FILE_MAGIC,
+            (char *)context->weight_mmap_addr);
+    return NULL;
+  }
 
   return context;
 }
 
 bool ONNC_RUNTIME_shutdown_runtime(void *onnc_runtime_context) {
+  if (onnc_runtime_context == NULL) {
+    return true;
+  }
+
   Context *context = (Context *)onnc_runtime_context;
   for (size_t i = 0; i < context->mem_i; ++i) {
     free(context->mem[i]);
@@ -85,17 +95,4 @@ void *ONNC_RUNTIME_internal_allocate_memory(void *onnc_runtime_context, size_t n
   context->mem[context->mem_i] = mem;
   context->mem_i += 1;
   return mem;
-}
-
-int main(int argc, const char *argv[]) {
-  if (argc < 2) {
-    printf("%s ONNC_WEIGHT\n", argv[0]);
-    return EXIT_SUCCESS;
-  }
-  void *context = ONNC_RUNTIME_init_runtime(argv[1]);
-  if (ONNC_RUNTIME_shutdown_runtime(context)) {
-    return EXIT_SUCCESS;
-  } else {
-    return EXIT_FAILURE;
-  }
 }
