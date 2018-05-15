@@ -54,6 +54,92 @@ static inline void dump_dim(int32_t ndim, int32_t * restrict dim) {
   fprintf(stderr, "]\n");
 }
 
+void ONNC_RUNTIME_conv_2d_float(void * restrict onnc_runtime_context,
+                                int32_t N, int32_t C, int32_t iH, int32_t iW,
+                                const float X[restrict N][C][iH][iW],
+                                int32_t M, int32_t kC, int32_t kH, int32_t kW,
+                                const float W[restrict M][kC][kH][kW],
+                                const float B[restrict M],
+                                int32_t oN, int32_t oC, int32_t oH, int32_t oW,
+                                float Y[restrict oN][oC][oH][oW],
+                                int32_t auto_pad,
+                                const int32_t * restrict dilations,
+                                int32_t group,
+                                const int32_t * restrict kernel_shape,
+                                const int32_t * restrict pads,
+                                const int32_t * restrict strides) {
+  // TODO: auto_pad
+
+  fprintf(stderr, "Conv 2D\n");
+  fprintf(stderr, "  X: %p, W: %p\n", X, W);
+  fprintf(stderr, "  N: %"PRId32" C: %"PRId32" iH: %"PRId32" iW: %"PRId32"\n", N, C, iH, iW);
+  fprintf(stderr, "  M: %"PRId32" kC: %"PRId32" kH: %"PRId32" kW: %"PRId32"\n", M, kC, kH, kW);
+  fprintf(stderr, "  B: %p, Y: %p\n", B, Y);
+  fprintf(stderr, "  oN: %"PRId32" oC: %"PRId32" oH: %"PRId32" oW: %"PRId32"\n", oN, oC, oH, oW);
+  fprintf(stderr, "  auto_pad: %"PRId32"\n", auto_pad);
+  fprintf(stderr, "  dilations: %p [", dilations);
+  for (int i = 0; i < 2; ++i) {
+    fprintf(stderr, " %"PRId32, dilations[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  group: %"PRId32"\n", group);
+  fprintf(stderr, "  kernel_shape: %p [", kernel_shape);
+  if (kernel_shape != NULL) {
+    for (int i = 0; i < 2; ++i) {
+      fprintf(stderr, " %"PRId32, kernel_shape[i]);
+    }
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  pads: %p [", pads);
+  for (int i = 0; i < 4; ++i) {
+    fprintf(stderr, " %"PRId32, pads[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  strides: %p [", strides);
+  for (int i = 0; i < 2; ++i) {
+    fprintf(stderr, " %"PRId32, strides[i]);
+  }
+  fprintf(stderr, "]\n");
+
+  // TODO: type
+  for (int32_t n = 0; n < oN; ++n) {
+    for (int32_t c = 0; c < oC; ++c) {
+
+      for (int32_t h = 0; h < oH; ++h) {
+        for (int32_t w = 0; w < oW; ++w) {
+
+          int32_t base_c = (c * group / M) * kC; // input channel <-group-> output channel
+          int32_t base_h = h * strides[0] - pads[0];
+          int32_t base_w = w * strides[1] - pads[1];
+
+          float sum = 0.f;
+
+          for (int32_t w_channel = 0; w_channel < kC; ++w_channel) {
+            int32_t input_channel = base_c + w_channel;
+            for (int32_t i = (base_h < 0 ? (-base_h) / dilations[0] : 0); i < kH; ++i) {
+              int32_t input_h = base_h + i * dilations[0];
+              if (input_h >= iH) { break; }
+              for (int32_t j =  (base_w < 0 ? (-base_w) / dilations[1] : 0); j < kW; ++j) {
+                int32_t input_w = base_w + j * dilations[1];
+                if (input_w >= iW) { break; }
+
+                float input = X[n][input_channel][input_h][input_w];
+                float weight = W[c][w_channel][i][j];
+                sum += input * weight;
+              }
+            }
+          }
+
+          if (B != NULL) {
+            sum += B[c];
+          }
+          Y[n][c][h][w] = sum;
+        }
+      }
+    }
+  }
+}
+
 
 void ONNC_RUNTIME_conv_float(void * restrict onnc_runtime_context,
                              const float * restrict X, const float * restrict W,
@@ -328,6 +414,8 @@ void ONNC_RUNTIME_softmax_float(void * restrict onnc_runtime_context,
       sum += v;
       Y[j] = v;
     }
+    fprintf(stderr, "  max: %f\n", max);
+    fprintf(stderr, "  sum: %f\n", sum);
 
     for (int64_t j = 0; j < D; ++j) {
       Y[j] /= sum;
@@ -346,7 +434,7 @@ void ONNC_RUNTIME_reshape_float(void * restrict onnc_runtime_context,
   for (int32_t i = 0; i < ndim; ++i) {
     size *= X_dim[i];
   }
-  memcpy(reshaped, data, size);
+  memcpy(reshaped, data, size * sizeof(float));
 }
 
 
@@ -382,14 +470,14 @@ void ONNC_RUNTIME_lrn_float(void * restrict onnc_runtime_context,
         int64_t start = c - (size/2);
         if (start < 0) { start = 0; }
         int64_t end = c + (size/2);
-        if (end > C) { end = C; }
+        if (end >= C) { end = C - 1; }
 
         float sum = 0.f;
-        for (int64_t j = start; j < end; ++j) {
+        for (int64_t j = start; j <= end; ++j) {
           float value = X[(n*C + j)*len + i];
           sum += value * value;
         }
-        Y[(n*C + c)*len + i] = powf(bias + alpha_over_size * sum, -beta);
+        Y[(n*C + c)*len + i] = X[(n*C + c)*len + i] * powf(bias + alpha_over_size * sum, -beta);
       }
     }
   }

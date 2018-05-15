@@ -2,8 +2,8 @@ src = $(wildcard *.c)
 obj = $(src:.c=.o)
 dep = $(obj:.o=.d)  # one dependency file for each source
 
-CFLAGS = -std=gnu11 -Wall -Werror -fPIC
-CXXFLAGS = -std=c++14 -Wall -Werror -fPIC
+CFLAGS = -std=gnu11 -Wall -Werror -fPIC -Ofast -ffast-math
+CXXFLAGS = -std=c++14 -Wall -Werror -fPIC -Ofast -ffast-math
 LDFLAGS = -lm
 
 onnc-runtime: libonnc-runtime.so main.o

@@ -40,6 +40,38 @@ bool ONNC_RUNTIME_shutdown_runtime(void *onnc_runtime_context);
  */
 void *ONNC_RUNTIME_load_weight(void *onnc_runtime_context, uint32_t weight_index);
 
+#ifdef __cplusplus
+void ONNC_RUNTIME_conv_2d_float(void * restrict onnc_runtime_context,
+                                int32_t N, int32_t C, int32_t iH, int32_t iW,
+                                const float * restrict X,
+                                int32_t M, int32_t kC, int32_t kH, int32_t kW,
+                                const float * restrict W,
+                                const float * restrict B,
+                                int32_t oN, int32_t oC, int32_t oH, int32_t oW,
+                                const float * restrict Y,
+                                int32_t auto_pad,
+                                const int32_t * restrict dilations,
+                                int32_t group,
+                                const int32_t * restrict kernel_shape,
+                                const int32_t * restrict pads,
+                                const int32_t * restrict strides);
+#else
+void ONNC_RUNTIME_conv_2d_float(void * restrict onnc_runtime_context,
+                                int32_t N, int32_t C, int32_t iH, int32_t iW,
+                                const float X[restrict N][C][iH][iW],
+                                int32_t M, int32_t kC, int32_t kH, int32_t kW,
+                                const float W[restrict M][kC][kH][kW],
+                                const float B[restrict M],
+                                int32_t oN, int32_t oC, int32_t oH, int32_t oW,
+                                float Y[restrict oN][oC][oH][oW],
+                                int32_t auto_pad,
+                                const int32_t * restrict dilations,
+                                int32_t group,
+                                const int32_t * restrict kernel_shape,
+                                const int32_t * restrict pads,
+                                const int32_t * restrict strides);
+#endif
+
 void ONNC_RUNTIME_conv_float(void * restrict onnc_runtime_context,
                              const float * restrict X, const float * restrict W,
                              int32_t ndim, const int32_t * restrict X_dim,

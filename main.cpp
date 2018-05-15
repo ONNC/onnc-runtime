@@ -29,18 +29,20 @@ int main(int argc, const char *argv[]) {
     1., 1., 1.
   };
   float *Y = new float[25];
-  ONNC_RUNTIME_conv_float(context,
-                          X, W,
-                          4, new int32_t[4]{1, 1, 7, 5},
-                          new int32_t[4]{1, 1, 3, 3},
-                          NULL, Y,
-                          new int32_t[4]{1, 1, 4, 2},
-                          0,
-                          new int32_t[2]{1, 1},
-                          1,
-                          new int32_t[2]{3, 3},
-                          new int32_t[4]{1, 0, 1, 0},
-                          new int32_t[2]{2, 2});
+  ONNC_RUNTIME_conv_2d_float(context,
+                             1, 1, 7, 5,
+                             X,
+                             1, 1, 3, 3,
+                             W,
+                             NULL,
+                             1, 1, 4, 2,
+                             Y,
+                             0,
+                             new int32_t[2]{1, 1},
+                             1,
+                             new int32_t[2]{3, 3},
+                             new int32_t[4]{1, 0, 1, 0},
+                             new int32_t[2]{2, 2});
   for (int i = 0; i < 25; ++i) {
     printf("%f\n", Y[i]);
   }
