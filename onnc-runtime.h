@@ -133,3 +133,20 @@ void ONNC_RUNTIME_lrn_float(void * restrict onnc_runtime_context,
                             float bias,
                             int32_t size,
                             float * restrict Y);
+
+void ONNC_RUNTIME_add_float(void * restrict onnc_runtime_context,
+                            const float * restrict A,
+                            int32_t ndim, const int32_t * restrict A_dim,
+                            const float * restrict B,
+                            float * restrict C);
+
+void ONNC_RUNTIME_averagepool_float(void * restrict onnc_runtime_context,
+                                    const float * restrict X,
+                                    int32_t ndim, const int32_t * restrict X_dim,
+                                    float * restrict Y,
+                                    const int32_t * restrict Y_dim,
+                                    int32_t auto_pad,
+                                    int32_t count_include_pad,
+                                    const int32_t * restrict kernel_shape,
+                                    const int32_t * restrict pads,
+                                    const int32_t * restrict strides);

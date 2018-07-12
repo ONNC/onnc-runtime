@@ -482,3 +482,96 @@ void ONNC_RUNTIME_lrn_float(void * restrict onnc_runtime_context,
     }
   }
 }
+
+void ONNC_RUNTIME_add_float(void * restrict onnc_runtime_context,
+                            const float * restrict A,
+                            int32_t ndim, const int32_t * restrict A_dim,
+                            const float * restrict B,
+                            float * restrict C) {
+  int64_t size = 1;
+  for (int32_t i = 0; i < ndim; ++i) {
+    size *= A_dim[i];
+  }
+  for (int64_t i = 0; i < size; ++i) {
+    C[i] = A[i] + B[i];
+  }
+}
+
+void ONNC_RUNTIME_averagepool_float(void * restrict onnc_runtime_context,
+                                    const float * restrict X,
+                                    int32_t ndim, const int32_t * restrict X_dim,
+                                    float * restrict Y,
+                                    const int32_t * restrict Y_dim,
+                                    int32_t auto_pad,
+                                    int32_t count_include_pad,
+                                    const int32_t * restrict kernel_shape,
+                                    const int32_t * restrict pads,
+                                    const int32_t * restrict strides) {
+  // TODO auto_pad
+  fprintf(stderr, "AveragePool\n");
+  fprintf(stderr, "  X: %p\n", X);
+  fprintf(stderr, "  ndim: %"PRId32", X_dim: %p [", ndim, X_dim);
+  for (int i = 0; i < ndim; ++i) {
+    fprintf(stderr, " %"PRId32, X_dim[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  Y: %p\n", Y);
+  fprintf(stderr, "  Y_dim: %p [", Y_dim);
+  for (int i = 0; i < ndim; ++i) {
+    fprintf(stderr, " %"PRId32, Y_dim[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  auto_pad: %"PRId32"\n", auto_pad);
+  fprintf(stderr, "  count_include_pad: %"PRId32"\n", count_include_pad);
+  fprintf(stderr, "  kernel_shape: %p [", kernel_shape);
+  for (int i = 0; i < ndim - 2; ++i) {
+    fprintf(stderr, " %"PRId32, kernel_shape[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  pads: %p [", pads);
+  for (int i = 0; i < (ndim - 2) * 2; ++i) {
+    fprintf(stderr, " %"PRId32, pads[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  strides: %p [", strides);
+  for (int i = 0; i < ndim - 2; ++i) {
+    fprintf(stderr, " %"PRId32, strides[i]);
+  }
+  fprintf(stderr, "]\n");
+
+  int64_t size = 1;
+  for (int i = 0; i < ndim - 2; ++i) {
+    size *= kernel_shape[i];
+  }
+
+  int32_t o_dim[ndim];
+  memset(o_dim, 0, sizeof(o_dim));
+  do { // while o_dim
+    int32_t base_dim[ndim];
+    for (int32_t i = 2; i < ndim; ++i) {
+      base_dim[i] = o_dim[i] * strides[i - 2] - pads[i - 2];
+    }
+
+    float sum = 0.f;
+
+    int32_t k_dim[ndim - 2];
+    memset(k_dim, 0, sizeof(k_dim));
+    do { // while k_dim
+      int32_t i_dim[ndim];
+      i_dim[0] = o_dim[0]; // N
+      i_dim[1] = o_dim[1]; // C
+      for (int32_t i = 2; i < ndim; ++i) {
+        i_dim[i] = base_dim[i] + k_dim[i - 2];
+      }
+      sum += get_value_or_zero(ndim, X_dim, X, i_dim);
+    } while (next_dim(ndim - 2, k_dim, kernel_shape));
+    if (count_include_pad) {
+      sum /= size;
+    } else {
+      // FIXME
+      sum /= size;
+    }
+
+    Y[dim_to_offset(ndim, o_dim, Y_dim)] = sum;
+  } while (next_dim(ndim, o_dim, Y_dim));
+}
