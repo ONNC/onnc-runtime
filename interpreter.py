@@ -562,24 +562,6 @@ if __name__ == '__main__':
             'Sum': run_add,
             'AveragePool': run_averagepool,
         }[node.op_type](node)
-        out_array = cast(address_table[node.output[0]], POINTER(c_float))
-        (ndim, dims) = ndim_and_dims_table[node.output[0]]
-        out_sum = [0.0]
-        def tensor_printer(offset, dim_index):
-            if dim_index == ndim - 1:
-                for index in range(dims[dim_index]):
-                    out_sum[0] += out_array[offset + index]
-                return dims[dim_index]
-            else:
-                orig_offset = offset
-                for index in range(dims[dim_index]):
-                    offset += tensor_printer(offset ,dim_index + 1)
-                return orig_offset - offset
-        tensor_printer(0, 0)
-        if(out_sum[0] == 0.0):
-            print('\x1b[6;37;41m Sum zero! \x1b[0m')
-        
-
 
     # print output
     for output in inferred_model.graph.output:
