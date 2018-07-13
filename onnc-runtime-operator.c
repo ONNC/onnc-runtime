@@ -6,6 +6,7 @@
 #include <math.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <inttypes.h>
 
 static inline bool next_dim(int32_t ndim, int32_t * restrict dim,
@@ -497,6 +498,7 @@ void ONNC_RUNTIME_add_float(void * restrict onnc_runtime_context,
   }
 }
 
+// FIXME: Test
 void ONNC_RUNTIME_averagepool_float(void * restrict onnc_runtime_context,
                                     const float * restrict X,
                                     int32_t ndim, const int32_t * restrict X_dim,
@@ -568,10 +570,74 @@ void ONNC_RUNTIME_averagepool_float(void * restrict onnc_runtime_context,
     if (count_include_pad) {
       sum /= size;
     } else {
-      // FIXME
+      // FIXME:
       sum /= size;
     }
 
     Y[dim_to_offset(ndim, o_dim, Y_dim)] = sum;
   } while (next_dim(ndim, o_dim, Y_dim));
+}
+
+void ONNC_RUNTIME_batchnormalization_float(void * restrict onnc_runtime_context,
+                                    const float * restrict X,
+                                    int32_t ndim, const int32_t * restrict X_dim,
+                                    float * restrict Y,
+                                    const float * restrict scale,
+                                    const float * restrict B,
+                                    const float * restrict meanI,
+                                    const float * restrict varI,
+                                    float * restrict meanO,
+                                    float * restrict varO,
+                                    float * restrict saved_mean,
+                                    float * restrict saved_var,
+                                    float epsilon,
+                                    float momentum,
+                                    int32_t spatial) {
+  // TODO: spatial
+  // Preparation
+  int32_t xN = X_dim[0], xC = X_dim[1];
+  int32_t strideSize = 1;
+  for(int32_t i = 2; i < ndim; ++i){
+    strideSize *= X_dim[i];
+  }
+
+  for(int32_t iN = 0; iN < xN; ++iN){
+    for(int32_t iC = 0; iC < xC; ++iC){
+      const float *pIMean = meanI + iN * xC;
+      const float *pIVariance = varI + iN * xC;
+      float OMean = 0.0f;
+      float OVariance = 0.0f;
+      const float *pX = X + iN * xC * strideSize + iC * strideSize;
+      float *pY = Y + iN * xC * strideSize + iC * strideSize;
+      // Mean
+      for(int32_t i = 0; i < strideSize; ++i){
+        OMean += pX[i];
+      }
+      OMean = OMean / ((strideSize == 0) ? epsilon : strideSize) * momentum + pIMean[iC] * (1 - momentum);
+      // Variance
+      for(int32_t i = 0; i < strideSize; ++i){
+        OVariance += powf(pX[i] - OMean, 2.0f);
+      }
+      OVariance = OVariance / ((strideSize == 0) ? epsilon : strideSize) * momentum + pIVariance[iC] * (1 - momentum);
+      // Stddev
+      float stddev = sqrtf(OVariance);
+      // Output
+      for(int32_t i = 0; i < strideSize; ++i){
+        pY[i] = scale[iC] * (pX[i] - OMean) / ((stddev == 0) ? epsilon : strideSize) + B[iC];
+      }
+      // Write back
+      if(meanO){
+        (meanO + iN * xC)[iC] = OMean;
+      }
+      if(varO){
+        (varO + iN * xC)[iC] = OVariance;
+      }
+      if(saved_mean){
+        (saved_mean + iN * xC)[iC] = pIMean[iC];
+      }
+      if(saved_var){
+        (saved_var + iN * xC)[iC] = pIVariance[iC];
+      }
+    }
+  }
 }
