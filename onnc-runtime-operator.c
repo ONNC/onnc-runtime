@@ -38,11 +38,17 @@ static inline int64_t dim_to_offset(int32_t ndim, const int32_t * restrict dim,
 
 // If it is outside the bounds of the input, use 0.
 static inline float get_value_or_zero(int32_t ndim, const int32_t * restrict dim_max,
-                                      const float * restrict value, const int32_t * restrict dim) {
+                                      const float * restrict value, const int32_t * restrict dim, int32_t * isPad) {
   for (int32_t i = 0; i < ndim; ++i) {
     if (dim[i] < 0 || dim[i] >= dim_max[i]) {
+      if(isPad){
+        *isPad = 1;
+      }
       return 0.f;
     }
+  }
+  if(isPad){
+    *isPad = 0;
   }
   return value[dim_to_offset(ndim, dim, dim_max)];
 }
@@ -230,8 +236,8 @@ void ONNC_RUNTIME_conv_float(void * restrict onnc_runtime_context,
         i_dim[1] = (o_dim[1] * group / M) * C + channel; // input channel <-group-> output channel
         w_dim[1] = channel; // C
 
-        float input = get_value_or_zero(ndim, X_dim, X, i_dim);
-        float weight = get_value_or_zero(ndim, W_dim, W, w_dim);
+        float input = get_value_or_zero(ndim, X_dim, X, i_dim, NULL);
+        float weight = get_value_or_zero(ndim, W_dim, W, w_dim, NULL);
         sum += input * weight;
       }
       w_dim[1] = 0; // reset C
@@ -343,7 +349,7 @@ void ONNC_RUNTIME_maxpool_float(void * restrict onnc_runtime_context,
       for (int32_t i = 2; i < ndim; ++i) {
         i_dim[i] = base_dim[i] + k_dim[i - 2];
       }
-      float input = get_value_or_zero(ndim, X_dim, X, i_dim);
+      float input = get_value_or_zero(ndim, X_dim, X, i_dim, NULL);
       max = fmaxf(input, max);
     } while (next_dim(ndim - 2, k_dim, kernel_shape));
 
@@ -558,6 +564,7 @@ void ONNC_RUNTIME_averagepool_float(void * restrict onnc_runtime_context,
 
     int32_t k_dim[ndim - 2];
     memset(k_dim, 0, sizeof(k_dim));
+    int32_t padCount = 0;
     do { // while k_dim
       int32_t i_dim[ndim];
       i_dim[0] = o_dim[0]; // N
@@ -565,13 +572,16 @@ void ONNC_RUNTIME_averagepool_float(void * restrict onnc_runtime_context,
       for (int32_t i = 2; i < ndim; ++i) {
         i_dim[i] = base_dim[i] + k_dim[i - 2];
       }
-      sum += get_value_or_zero(ndim, X_dim, X, i_dim);
+      int32_t isPad = 0;
+      sum += get_value_or_zero(ndim, X_dim, X, i_dim, &isPad);
+      if(isPad){
+        ++padCount;
+      }
     } while (next_dim(ndim - 2, k_dim, kernel_shape));
     if (count_include_pad) {
       sum /= size;
     } else {
-      // FIXME:
-      sum /= size;
+      sum /= (size - padCount);
     }
 
     Y[dim_to_offset(ndim, o_dim, Y_dim)] = sum;
@@ -593,6 +603,19 @@ void ONNC_RUNTIME_batchnormalization_float(void * restrict onnc_runtime_context,
                                     float epsilon,
                                     float momentum,
                                     int32_t spatial) {
+  fprintf(stderr, "Batchnormalization\n");
+  fprintf(stderr, "  X: %p\n", X);
+  fprintf(stderr, "  ndim: %"PRId32", X_dim: %p [", ndim, X_dim);
+  for (int i = 0; i < ndim; ++i) {
+    fprintf(stderr, " %"PRId32, X_dim[i]);
+  }
+  fprintf(stderr, "]\n");
+  fprintf(stderr, "  Y: %p\n", Y);
+  fprintf(stderr, "  scale: %p [", scale);
+  for (int i = 0; i < ndim - 2; ++i) {
+    fprintf(stderr, " %f", scale[i]);
+  }
+  fprintf(stderr, "]\n");
   // TODO: spatial
   // Preparation
   int32_t xN = X_dim[0], xC = X_dim[1];

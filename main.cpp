@@ -16,28 +16,7 @@ int main(int argc, const char *argv[]) {
   
   float *A = new float[30]{
     0., 1.,
-    2., 2.,
-    4., 5.,
-    
-    6., 7.,
-    8., 9.,
-    10., 11.,
-    
-    12., 13.,
-    14., 15.,
-    16., 17.,
-    
-    18., 19.,
-    20., 21.,
-    22., 23.,
-    
-    24., 25.,
-    26., 27.,
-    28., 29.
-  };
-  float *B = new float[30]{
-    0., 1.,
-    2., 2.,
+    2., 3.,
     4., 5.,
     
     6., 7.,
@@ -57,15 +36,25 @@ int main(int argc, const char *argv[]) {
     28., 29.
   };
   int32_t x_dim[4] = {5, 1, 2, 3}; 
-  float *Y = new float[30];
-  ONNC_RUNTIME_add_float(NULL,
-                             A, 4, x_dim,
-                             B,
-                             Y);
+  float *Y = new float[5];
+  int32_t y_dim[4] = {5, 1, 1, 1};
+  int32_t k_dim[2] = {2, 3};
+  int32_t p_dim[4] = {0, 0, 0, 0};
+  int32_t s_dim[4] = {1, 1};
+  ONNC_RUNTIME_averagepool_float(NULL,
+                                 A,
+                                 4, x_dim,
+                                 Y,
+                                 y_dim,
+                                 0,
+                                 1,
+                                 k_dim,
+                                 p_dim,
+                                 s_dim);
   
   // Test Output
   printf("== Y ==\n");
-  for(int32_t j = 0; j < 30; ++j){
+  for(int32_t j = 0; j < 5; ++j){
     printf("%f ", Y[j]);
   }
   //if (ONNC_RUNTIME_shutdown_runtime(context)) {

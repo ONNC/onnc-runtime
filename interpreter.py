@@ -513,7 +513,7 @@ if __name__ == '__main__':
         Y = address_table[node.output[0]]
         (_, Y_dim) = ndim_and_dims_table[node.output[0]]
         auto_pad = attributes['auto_pad'] if 'auto_pad' in attributes else 0
-        count_include_pad = attributes['count_include_pad'] if 'auto_pad' in attributes else 0
+        count_include_pad = attributes['count_include_pad'] if 'count_include_pad' in attributes else 0
         kernel_shape = list_to_c_int32_array(attributes['kernel_shape'])
         pads = list_to_c_int32_array(attributes['pads'] if 'pads' in attributes else ([0] * (ndim - 2) * 2))
         strides = list_to_c_int32_array(attributes['strides'] if 'strides' in attributes else ([1] * (ndim - 2)))
@@ -564,7 +564,7 @@ if __name__ == '__main__':
         }[node.op_type](node)
         out_array = cast(address_table[node.output[0]], POINTER(c_float))
         (ndim, dims) = ndim_and_dims_table[node.output[0]]
-        out_sum = [0]
+        out_sum = [0.0]
         def tensor_printer(offset, dim_index):
             if dim_index == ndim - 1:
                 for index in range(dims[dim_index]):
@@ -576,8 +576,9 @@ if __name__ == '__main__':
                     offset += tensor_printer(offset ,dim_index + 1)
                 return orig_offset - offset
         tensor_printer(0, 0)
-        if out_sum[0] == 0:
-            sys.exit(-1)
+        if(out_sum[0] == 0.0):
+            print('\x1b[6;37;41m Sum zero! \x1b[0m')
+        
 
 
     # print output
