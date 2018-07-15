@@ -1,10 +1,10 @@
 FROM ubuntu:16.04
 
-RUN groupadd --gid 1000 user \
-    && useradd --uid 1000 --gid user --shell /bin/bash --create-home user \
+RUN groupadd --gid 1000 onnc \
+    && useradd --uid 1000 --gid onnc --shell /bin/bash --create-home onnc \
     && mkdir -p /etc/sudoers.d \
-    && echo 'user ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers.d/user \
-    && chmod 440 /etc/sudoers.d/user
+    && echo 'onnc ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers.d/onnc \
+    && chmod 440 /etc/sudoers.d/onnc
 
 RUN sed -i 's/archive.ubuntu.com/debian.linux.org.tw/' /etc/apt/sources.list \
     && apt-get update \
@@ -21,13 +21,15 @@ RUN sed -i 's/archive.ubuntu.com/debian.linux.org.tw/' /etc/apt/sources.list \
         python-pip \
         python-dev \
         python-setuptools \
+# for Debug
+        gdb \
     && rm -rf /var/lib/apt/lists/*
 
-USER user
+VOLUME [ "/home/onnc/onnc-runtime" ]
 
-WORKDIR /home/user/onnc-runtime
-RUN sudo chown user:user /home/user/onnc-runtime
+WORKDIR /home/onnc/onnc-runtime
+RUN sudo chown onnc:onnc /home/onnc/onnc-runtime
 
-COPY --chown=user:user ./ ./
+COPY --chown=onnc:onnc ./ ./
 
-RUN pip install onnx
+USER onnc
