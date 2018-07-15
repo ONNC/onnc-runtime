@@ -1,7 +1,4 @@
-*.o
-*.d
-onnc-runtime
-libonnc*
+build/
 .vscode
 *.onnx
 test_data*
