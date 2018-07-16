@@ -1,0 +1,17 @@
+include_directories(include)
+
+add_library(onnc-runtime SHARED
+    lib/onnc-runtime.c
+    lib/onnc-runtime-operator.c
+)
+
+set_target_properties(onnc-runtime
+    PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
+install(TARGETS onnc-runtime
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib/static
+    PUBLIC_HEADER DESTINATION include
+)

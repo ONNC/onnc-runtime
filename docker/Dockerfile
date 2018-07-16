@@ -12,7 +12,9 @@ RUN sed -i 's/archive.ubuntu.com/debian.linux.org.tw/' /etc/apt/sources.list \
         curl \
         sudo \
         make \
+        cmake \
         g++ \
+        gcc \
         python \
 # for onnx
         git \

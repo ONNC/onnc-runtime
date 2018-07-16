@@ -14,7 +14,7 @@ int main(int argc, const char *argv[]) {
   }*/
   //void *context = ONNC_RUNTIME_init_runtime(argv[1]);
   
-  float *A = new float[30]{
+  float A[30] = {
     0., 1.,
     2., 3.,
     4., 5.,
