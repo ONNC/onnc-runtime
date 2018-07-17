@@ -1,4 +1,4 @@
-#include "onnc-runtime-internal.h"
+#include <onnc-runtime-internal.h>
 
 #include <assert.h>
 #include <string.h>

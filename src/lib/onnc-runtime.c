@@ -1,4 +1,4 @@
-#include "onnc-runtime-internal.h"
+#include <onnc-runtime-internal.h>
 
 #include <stdlib.h>
 #include <stdio.h>
