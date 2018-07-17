@@ -4,6 +4,9 @@ add_custom_target(docker-image
 
 add_custom_target(docker-container
     COMMAND docker create --privileged=true -t "--name" onnc-runtime --volume ${PROJECT_SOURCE_DIR}:/home/onnc/onnc-runtime onnc/onnc-runtime
+    COMMAND docker start onnc-runtime
+    COMMAND docker exec -t -w /home/onnc/onnc-runtime onnc-runtime pip install -e onnx
+    COMMAND docker stop onnc-runtime
 )
 
 add_custom_target(docker-build
@@ -12,7 +15,6 @@ add_custom_target(docker-build
     COMMAND docker exec -t -w /home/onnc/onnc-runtime/docker/build onnc-runtime cmake -DCMAKE_INSTALL_PREFIX=/home/onnc/onnc-runtime/docker/install ../..
     COMMAND docker exec -t -w /home/onnc/onnc-runtime/docker/build onnc-runtime make -j4
     COMMAND docker exec -t -w /home/onnc/onnc-runtime/docker/build onnc-runtime make install
-    COMMAND docker exec -t -w /home/onnc/onnc-runtime/docker/build onnc-runtime make clean
     COMMAND docker stop onnc-runtime
 )
 

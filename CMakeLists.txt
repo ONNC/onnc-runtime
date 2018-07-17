@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 project(onnc-runtime)
 
-set(C_STANDARD 11)
-set(CXX_STANDARD 14)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -DONNX_NAMESPACE=onnx)
 add_compile_options(-fPIC)
 add_compile_options(-Ofast)
 add_compile_options(-ffast-math)
@@ -10,24 +11,17 @@ add_compile_options(-ffast-math)
 add_subdirectory(docker)
 add_subdirectory(src)
 
-include_directories(src/include)
-
-add_executable(onnc-runtime-bin
-    main.cpp
+include(ExternalProject)
+ExternalProject_Add(ext_project_onnx
+    PREFIX onnx
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/onnx
+    STEP_TARGETS build
+    CMAKE_ARGS -DBUILD_PYTHON=OFF
+    INSTALL_COMMAND mkdir -p ../../lib ../../include COMMAND cp libonnx.a libonnx_proto.a ../../lib COMMAND cp -r onnx ../../include
 )
-
-target_link_libraries(onnc-runtime-bin
-    onnc-runtime
-)
-set_target_properties(onnc-runtime-bin
-    PROPERTIES OUTPUT_NAME onnc-runtime
-)
+include_directories(${PROJECT_SOURCE_DIR}/onnx)
+include_directories(${CMAKE_BINARY_DIR}/onnx/include)
+link_directories(${CMAKE_BINARY_DIR}/onnx/lib)
+add_subdirectory(interpreter)
 
 option(CMAKE_INSTALL_PREFIX "Install prefix" ${PROJECT_SOURCE_DIR}/install)
-
-install(TARGETS onnc-runtime-bin
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib/static
-    PUBLIC_HEADER DESTINATION include
-)
