@@ -9,10 +9,12 @@
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 
+#define restrict __restrict__
 extern "C"{
 #include <onnc-runtime-internal.h>
 #include <weight-from-memory.h>
 }
+#undef restrict
 
 typedef std::map<std::string, void*> address_table_t;
 typedef std::map<std::string, const ::onnx::TensorShapeProto *> shape_table_t;

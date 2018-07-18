@@ -1,8 +1,8 @@
 include_directories(include)
+
+file(GLOB_RECURSE SRC_C_FILES lib/*.c)
 add_library(onnc-runtime SHARED
-    lib/onnc-runtime.c
-    lib/onnc-runtime-operator.c
-    lib/weight-from-memory.c
+    ${SRC_C_FILES}
 )
 set_target_properties(onnc-runtime
     PROPERTIES OUTPUT_NAME onnc-runtime
