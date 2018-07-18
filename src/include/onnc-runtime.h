@@ -45,130 +45,118 @@ bool ONNC_RUNTIME_shutdown_runtime(void *onnc_runtime_context);
  */
 void *ONNC_RUNTIME_load_from_tensor_table(void *tensor_table, uint32_t index);
 
-
-#ifdef __cplusplus
-void ONNC_RUNTIME_conv_2d_float(void * onnc_runtime_context,
-                                int32_t N, int32_t C, int32_t iH, int32_t iW,
-                                const float * X,
-                                int32_t M, int32_t kC, int32_t kH, int32_t kW,
-                                const float * W,
-                                const float * B,
-                                int32_t oN, int32_t oC, int32_t oH, int32_t oW,
-                                const float * Y,
-                                int32_t auto_pad,
-                                const int32_t * dilations,
-                                int32_t group,
-                                const int32_t * kernel_shape,
-                                const int32_t * pads,
-                                const int32_t * strides);
-#else
-void ONNC_RUNTIME_conv_2d_float(void * onnc_runtime_context,
-                                int32_t N, int32_t C, int32_t iH, int32_t iW,
-                                const float X[N][C][iH][iW],
-                                int32_t M, int32_t kC, int32_t kH, int32_t kW,
-                                const float W[M][kC][kH][kW],
-                                const float B[M],
-                                int32_t oN, int32_t oC, int32_t oH, int32_t oW,
-                                float Y[oN][oC][oH][oW],
-                                int32_t auto_pad,
-                                const int32_t * dilations,
-                                int32_t group,
-                                const int32_t * kernel_shape,
-                                const int32_t * pads,
-                                const int32_t * strides);
-#endif
-
-void ONNC_RUNTIME_conv_float(void * onnc_runtime_context,
-                             const float * X, const float * W,
-                             int32_t ndim, const int32_t * X_dim,
-                             const int32_t * W_dim,
-                             const float * B, float * Y,
-                             const int32_t * Y_dim,
-                             int32_t auto_pad,
-                             const int32_t * dilations,
-                             int32_t group,
-                             const int32_t * kernel_shape,
-                             const int32_t * pads,
-                             const int32_t * strides);
-
-void ONNC_RUNTIME_gemm_float(void * onnc_runtime_context,
-                             const float * A,
-                             const float * B,
-                             int32_t M, int32_t K, int32_t N,
-                             const float * C,
-                             int32_t ncdim, const int32_t * C_dim,
-                             float * Y,
-                             int32_t nydim, const int32_t * Y_dim,
-                             float alpha,
-                             float beta,
-                             int32_t broadcast,
-                             int32_t transA,
-                             int32_t transB);
-
-void ONNC_RUNTIME_maxpool_float(void * onnc_runtime_context,
-                                const float * X,
-                                int32_t ndim, const int32_t * X_dim,
-                                float * Y,
-                                const int32_t * Y_dim,
-                                int32_t auto_pad,
-                                const int32_t * kernel_shape,
-                                const int32_t * pads,
-                                const int32_t * strides);
-
-void ONNC_RUNTIME_relu_float(void * onnc_runtime_context,
-                             const float * X,
-                             int32_t ndim, const int32_t * X_dim,
-                             float * Y);
-
-void ONNC_RUNTIME_softmax_float(void * onnc_runtime_context,
-                                const float * input,
-                                int32_t ndim, const int32_t * input_dim,
-                                int32_t axis,
-                                float * output);
-
-void ONNC_RUNTIME_reshape_float(void * onnc_runtime_context,
-                                const float * data,
-                                int32_t ndim, const int32_t * X_dim,
-                                float * reshaped);
-
-void ONNC_RUNTIME_lrn_float(void * onnc_runtime_context,
-                            const float * X,
-                            int32_t ndim, const int32_t * X_dim,
-                            float alpha,
-                            float beta,
-                            float bias,
-                            int32_t size,
-                            float * Y);
-
-void ONNC_RUNTIME_add_float(void * onnc_runtime_context,
-                            const float * A,
-                            int32_t ndim, const int32_t * A_dim,
-                            const float * B,
-                            float * C);
-
-void ONNC_RUNTIME_averagepool_float(void * onnc_runtime_context,
-                                    const float * X,
-                                    int32_t ndim, const int32_t * X_dim,
-                                    float * Y,
-                                    const int32_t * Y_dim,
-                                    int32_t auto_pad,
-                                    int32_t count_include_pad,
-                                    const int32_t * kernel_shape,
-                                    const int32_t * pads,
-                                    const int32_t * strides);
-
-void ONNC_RUNTIME_batchnormalization_float(void * onnc_runtime_context,
-                                    const float * X,
-                                    int32_t ndim, const int32_t * X_dim,
-                                    float * Y,
-                                    const float * scale,
-                                    const float * B,
-                                    const float * meanI,
-                                    const float * varI,
-                                    float * meanO,
-                                    float * varO,
-                                    float * saved_mean,
-                                    float * saved_var,
-                                    float epsilon,
-                                    float momentum,
-                                    int32_t spatial);
+#include "operator/abs.h"
+#include "operator/acos.h"
+#include "operator/add.h"
+#include "operator/and.h"
+#include "operator/argmax.h"
+#include "operator/argmin.h"
+#include "operator/asin.h"
+#include "operator/atan.h"
+#include "operator/averagepool.h"
+#include "operator/batchnormalization.h"
+#include "operator/cast.h"
+#include "operator/ceil.h"
+#include "operator/clip.h"
+#include "operator/concat.h"
+#include "operator/constant.h"
+#include "operator/conv.h"
+#include "operator/convtranspose.h"
+#include "operator/cos.h"
+#include "operator/depthtospace.h"
+#include "operator/div.h"
+#include "operator/dropout.h"
+#include "operator/elu.h"
+#include "operator/equal.h"
+#include "operator/exp.h"
+#include "operator/flatten.h"
+#include "operator/floor.h"
+#include "operator/gru.h"
+#include "operator/gather.h"
+#include "operator/gemm.h"
+#include "operator/globalaveragepool.h"
+#include "operator/globallppool.h"
+#include "operator/globalmaxpool.h"
+#include "operator/greater.h"
+#include "operator/hardsigmoid.h"
+#include "operator/hardmax.h"
+#include "operator/identity.h"
+#include "operator/instancenormalization.h"
+#include "operator/lrn.h"
+#include "operator/lstm.h"
+#include "operator/leakyrelu.h"
+#include "operator/less.h"
+#include "operator/log.h"
+#include "operator/logsoftmax.h"
+#include "operator/lpnormalization.h"
+#include "operator/lppool.h"
+#include "operator/matmul.h"
+#include "operator/max.h"
+#include "operator/maxpool.h"
+#include "operator/maxroipool.h"
+#include "operator/mean.h"
+#include "operator/min.h"
+#include "operator/mul.h"
+#include "operator/multinomial.h"
+#include "operator/neg.h"
+#include "operator/not.h"
+#include "operator/or.h"
+#include "operator/prelu.h"
+#include "operator/pad.h"
+#include "operator/pow.h"
+#include "operator/rnn.h"
+#include "operator/randomnormal.h"
+#include "operator/randomnormallike.h"
+#include "operator/randomuniform.h"
+#include "operator/randomuniformlike.h"
+#include "operator/reciprocal.h"
+#include "operator/reducel1.h"
+#include "operator/reducel2.h"
+#include "operator/reducelogsum.h"
+#include "operator/reducelogsumexp.h"
+#include "operator/reducemax.h"
+#include "operator/reducemean.h"
+#include "operator/reducemin.h"
+#include "operator/reduceprod.h"
+#include "operator/reducesum.h"
+#include "operator/reducesumsquare.h"
+#include "operator/relu.h"
+#include "operator/reshape.h"
+#include "operator/selu.h"
+#include "operator/shape.h"
+#include "operator/sigmoid.h"
+#include "operator/sin.h"
+#include "operator/size.h"
+#include "operator/slice.h"
+#include "operator/softmax.h"
+#include "operator/softplus.h"
+#include "operator/softsign.h"
+#include "operator/spacetodepth.h"
+#include "operator/split.h"
+#include "operator/sqrt.h"
+#include "operator/squeeze.h"
+#include "operator/sub.h"
+#include "operator/sum.h"
+#include "operator/tan.h"
+#include "operator/tanh.h"
+#include "operator/tile.h"
+#include "operator/topk.h"
+#include "operator/transpose.h"
+#include "operator/unsqueeze.h"
+#include "operator/upsample.h"
+#include "operator/xor.h"
+#include "operator/aten.h"
+#include "operator/affine.h"
+#include "operator/constantfill.h"
+#include "operator/crop.h"
+#include "operator/gruunit.h"
+#include "operator/giventensorfill.h"
+#include "operator/if.h"
+#include "operator/imagescaler.h"
+#include "operator/loop.h"
+#include "operator/loopindextensor.h"
+#include "operator/meanvariancenormalization.h"
+#include "operator/parametricsoftplus.h"
+#include "operator/scale.h"
+#include "operator/scaledtanh.h"
+#include "operator/thresholdedrelu.h"

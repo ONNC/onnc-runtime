@@ -11,9 +11,6 @@ add_compile_options(-fPIC)
 add_compile_options(-Ofast)
 add_compile_options(-ffast-math)
 
-add_subdirectory(docker)
-add_subdirectory(src)
-
 include(ExternalProject)
 ExternalProject_Add(ext_project_onnx
     PREFIX onnx
@@ -25,4 +22,8 @@ ExternalProject_Add(ext_project_onnx
 include_directories(${PROJECT_SOURCE_DIR}/onnx)
 include_directories(${CMAKE_BINARY_DIR}/onnx/include)
 link_directories(${CMAKE_BINARY_DIR}/onnx/lib)
+
+add_subdirectory(src)
+add_subdirectory(test)
 add_subdirectory(interpreter)
+add_subdirectory(docker)
