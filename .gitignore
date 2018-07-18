@@ -1,5 +1,7 @@
 build/
 .vscode
 *.onnx
+*.d
+*.o
 test_data*
 weight.onnc.bin
