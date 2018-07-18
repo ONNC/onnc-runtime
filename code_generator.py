@@ -104,7 +104,7 @@ def gen_compute_ir_substitution_hash(schema):
   # ========== end of Attributes ==============
   return hash
 
-def gen_operator_h(operator_schemas, template_filename, dist):
+def gen_operator_runtime(operator_schemas, template_filename, dist):
   # TODO: Refactor to simple data structure and simple for loop
   for domain, supportmap in operator_schemas:
     for _, namemap in supportmap:
@@ -174,4 +174,5 @@ if __name__ == '__main__':
   if not os.path.exists(output_dir + operator_path):
     os.makedirs(output_dir + operator_path)
   gen_runtime_h(operator_schemas, 'onnc-runtime.template.h', output_dir + 'onnc-runtime.h', operator_path)
-  gen_operator_h(operator_schemas, 'operator.template.h', output_dir + operator_path + '/${operator_name}.h')
+  gen_operator_runtime(operator_schemas, 'operator.template.h', output_dir + operator_path + '/${operator_name}.h')
+  gen_operator_runtime(operator_schemas, 'operator.template.c', output_dir + operator_path + '/${operator_name}.c')
