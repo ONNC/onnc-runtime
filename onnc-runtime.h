@@ -17,12 +17,17 @@ struct ONNC_RUNTIME_Tensor_offset_table {
 };
 
 /**
- * Initialize runtime by onnx model file.
+ * ONNC generated entry point.
+ * @param context The ONNC Runtime Context.
+ */
+void model_main(void *context);
+
+/**
+ * Initialize runtime.
  * @deprecated
- * @param onnx_model_file_name onnx model file name with path.
  * @return The ONNC Runtime Context, should be passed to every ONNC Runtime functions.
  */
-void *ONNC_RUNTIME_init_runtime(const char *onnx_model_file_name);
+void *ONNC_RUNTIME_init_runtime();
 
 /**
  * Shutdown runtime.
@@ -33,12 +38,13 @@ void *ONNC_RUNTIME_init_runtime(const char *onnx_model_file_name);
 bool ONNC_RUNTIME_shutdown_runtime(void *onnc_runtime_context);
 
 /**
- * Load weight to memory.
- * @param onnc_runtime_context the ONNC Runtime Context.
- * @param weight_index the weight index.
- * @return The memory which contains the weight[weight_index].
+ * Get tensor address from tensor table.
+ * @param tensor_table The tensor table start address.
+ * @param index Tensor index.
+ * @return The memory address of the TensorTable[index].
  */
-void *ONNC_RUNTIME_load_weight(void *onnc_runtime_context, uint32_t weight_index);
+void *ONNC_RUNTIME_load_from_tensor_table(void *tensor_table, uint32_t index);
+
 
 #ifdef __cplusplus
 void ONNC_RUNTIME_conv_2d_float(void * restrict onnc_runtime_context,

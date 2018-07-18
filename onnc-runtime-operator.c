@@ -53,6 +53,24 @@ static inline float get_value_or_zero(int32_t ndim, const int32_t * restrict dim
   return value[dim_to_offset(ndim, dim, dim_max)];
 }
 
+static inline float get_value_or_zero2(int32_t ndim, const int32_t * restrict dim_max,
+                                      const float * restrict value, const int32_t * restrict dim, int32_t * isPad) {
+  for (int32_t i = 0; i < ndim; ++i) {
+    if (dim[i] < 0 || dim[i] >= dim_max[i]) {
+      if(isPad){
+        *isPad = 1;
+      }
+      return 0.f;
+    }
+  }
+  if(isPad){
+    *isPad = 0;
+  }
+	size_t offset = dim_to_offset(ndim, dim, dim_max);
+	fprintf(stderr, " --- %d\n", (int)offset);
+  return value[offset];
+}
+
 static inline void dump_dim(int32_t ndim, int32_t * restrict dim) {
   fprintf(stderr, "  ndim: %"PRId32", X_dim: [", ndim);
   for (int i = 0; i < ndim; ++i) {
@@ -572,7 +590,11 @@ void ONNC_RUNTIME_averagepool_float(void * restrict onnc_runtime_context,
         i_dim[i] = base_dim[i] + k_dim[i - 2];
       }
       int32_t isPad = 0;
-      sum += get_value_or_zero(ndim, X_dim, X, i_dim, &isPad);
+      float f = get_value_or_zero(ndim, X_dim, X, i_dim, &isPad);
+			if (f != 0.f) {
+				fprintf(stderr, " !!! NOT ZERO: %f, %"PRId32"\n", f, isPad);
+			}
+      sum += f;
       if(isPad){
         ++padCount;
       }
