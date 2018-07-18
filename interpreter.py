@@ -41,7 +41,11 @@ if __name__ == '__main__':
     input_filename = sys.argv[2]
 
     onnx_model = onnx.load(model_filename)
+    print(helper.printable_graph(onnx_model.graph))
+    print(onnx_model.graph.value_info)
     inferred_model = shape_inference.infer_shapes(onnx_model)
+    print(helper.printable_graph(inferred_model.graph))
+    print(inferred_model.graph.value_info)
 
     MAGIC = ".TSR\0\0\0\0"
     offset = 0
@@ -562,6 +566,22 @@ if __name__ == '__main__':
             'Sum': run_add,
             'AveragePool': run_averagepool,
         }[node.op_type](node)
+        out_array = cast(address_table[node.output[0]], POINTER(c_float))
+        (ndim, dims) = ndim_and_dims_table[node.output[0]]
+        out_sum = [0.0]
+        def tensor_printer(offset, dim_index):
+            if dim_index == ndim - 1:
+                for index in range(dims[dim_index]):
+                    out_sum[0] += out_array[offset + index]
+                return dims[dim_index]
+            else:
+                orig_offset = offset
+                for index in range(dims[dim_index]):
+                    offset += tensor_printer(offset ,dim_index + 1)
+                return offset - orig_offset
+        tensor_printer(0, 0)
+        if(out_sum[0] == 0.0):
+            print('\x1b[6;37;41m Sum zero! \x1b[0m')
 
     # print output
     for output in inferred_model.graph.output:
@@ -584,7 +604,7 @@ if __name__ == '__main__':
                 for index in range(dims[dim_index]):
                     offset += tensor_pretty_printer(offset ,dim_index + 1)
                 print('  ' * dim_index + ']')
-                return orig_offset - offset
+                return offset - orig_offset
         tensor_pretty_printer(0, 0)
 
     succ = onnc_runtime.ONNC_RUNTIME_shutdown_runtime(context)
