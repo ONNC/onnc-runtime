@@ -11,6 +11,7 @@
 
 extern "C"{
 #include <onnc-runtime-internal.h>
+#include <weight-from-memory.h>
 }
 
 typedef std::map<std::string, void*> address_table_t;
@@ -109,14 +110,14 @@ int main(int argc, char *argv[]){
     prepareWeightFile(weight_filename, graph);
 
     // Init runtime
-    Context *context = (Context *)ONNC_RUNTIME_init_runtime(weight_filename);
+    Context *context = (Context *)ONNC_RUNTIME_init_runtime();
 
     address_table_t address_table;
     shape_table_t shapes_table;
 
     // Load weight
     for(int i = 0; i < graph.initializer_size(); ++i){
-        address_table[graph.initializer(i).name()] = ONNC_RUNTIME_load_weight(context, i);
+        address_table[graph.initializer(i).name()] = ONNC_RUNTIME_get_weight_memory(context, i);
     }
     
     // Load input

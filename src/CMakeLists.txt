@@ -2,6 +2,7 @@ include_directories(include)
 add_library(onnc-runtime SHARED
     lib/onnc-runtime.c
     lib/onnc-runtime-operator.c
+    lib/weight-from-memory.c
 )
 set_target_properties(onnc-runtime
     PROPERTIES OUTPUT_NAME onnc-runtime

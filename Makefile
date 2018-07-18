@@ -1,10 +1,10 @@
 onnc-runtime-src = \
-	onnc-runtime-operator.c \
-	onnc-runtime.c \
-	file-context.c \
-	input-from-memory.c \
-	weight-from-memory.c \
-	output-from-memory.c
+	src/lib/onnc-runtime-operator.c \
+	src/lib/onnc-runtime.c \
+	src/lib/file-context.c \
+	src/lib/input-from-memory.c \
+	src/lib/weight-from-memory.c \
+	src/lib/output-from-memory.c
 onnc-runtime-obj = $(onnc-runtime-src:.c=.o)
 all-tool-src = test.cpp main-file-file-file.c
 all-tool = $(patsubst %.c,%,$(patsubst %.cpp,%,$(all-tool-src)))
@@ -12,10 +12,10 @@ all-src = $(all-tool-src) $(onnc-runtime-src)
 all-obj = $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(all-src)))
 all-dep = $(all-obj:.o=.d)  # one dependency file for each source
 
-CFLAGS = -std=gnu11 -Wall -Werror -fPIC -Ofast -ffast-math
-CXXFLAGS = -std=c++14 -Wall -Werror -fPIC -Ofast -ffast-math
+CFLAGS = -std=gnu11 -Wall -Werror -fPIC -Ofast -ffast-math -Isrc/include
+CXXFLAGS = -std=c++14 -Wall -Werror -fPIC -Ofast -ffast-math -Isrc/include
 LDFLAGS = -lm
-MAIN_LDFLAGS = -Wl,-rpath,. -L. -lonnc-runtime
+MAIN_LDFLAGS = -Wl,-rpath,. -L. -lonnc-runtime 
 
 all: $(all-tool)
 

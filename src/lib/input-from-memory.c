@@ -1,6 +1,6 @@
-#include "input-from-memory.h"
-#include "file-context.h"
-#include "onnc-runtime-internal.h"
+#include <input-from-memory.h>
+#include <file-context.h>
+#include <onnc-runtime-internal.h>
 
 #include <stdlib.h>
 #include <string.h>

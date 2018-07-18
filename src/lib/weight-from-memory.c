@@ -1,6 +1,6 @@
-#include "weight-from-memory.h"
-#include "file-context.h"
-#include "onnc-runtime-internal.h"
+#include <weight-from-memory.h>
+#include <file-context.h>
+#include <onnc-runtime-internal.h>
 
 #include <stdlib.h>
 #include <string.h>
