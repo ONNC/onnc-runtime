@@ -13,16 +13,38 @@ extern "C"{
 #include <onnc-runtime-internal.h>
 }
 
-using namespace onnx;
-
 typedef std::map<std::string, void*> address_table_t;
 typedef std::map<std::string, const ::onnx::TensorShapeProto *> shape_table_t;
 
-void prepareWeightFile(const char *fileName){
+void prepareWeightFile(const char *fileName, const ::onnx::GraphProto& graph){
+    struct {
+        unsigned long long len;
+    } initializer_len;
+    struct {
+        unsigned long long offset;
+        unsigned long long size;
+    } offset_struct;
+
     std::ofstream weight_fout(fileName, std::ios_base::out | std::ios_base::binary);
     const char *magic = ".TSR\0\0\0\0";
-    weight_fout.write(magic, sizeof(int8_t) * 8);
-    // TODO:
+
+    weight_fout.write(magic, 8);
+    size_t offset = 16 * (1 + graph.initializer_size());
+    initializer_len.len = graph.initializer_size();
+    weight_fout.write((const char *)&initializer_len, sizeof(initializer_len));
+    // Prepare offset table
+    for(int i = 0; i < graph.initializer_size(); ++i){
+        const ::onnx::TensorProto& tensor = graph.initializer(i);
+        offset_struct.offset = offset;
+        offset_struct.size = tensor.raw_data().size();
+        weight_fout.write((const char *)&offset_struct, sizeof(offset_struct));
+        offset += offset_struct.size;
+    }
+    // Write data
+    for(int i = 0; i < graph.initializer_size(); ++i){
+        const std::string& rawData = graph.initializer(i).raw_data();
+        weight_fout.write(rawData.data(), rawData.size());
+    }
     weight_fout.close();
 }
 
@@ -73,18 +95,18 @@ int main(int argc, char *argv[]){
         return -1;
     }
     // Read onnx module
-    ModelProto *model = new ModelProto();
+    ::onnx::ModelProto model;
     std::ifstream model_fin(argv[1]);
     ::google::protobuf::io::IstreamInputStream model_input_stream(&model_fin);
     ::google::protobuf::io::CodedInputStream model_coded_stream(&model_input_stream);
     model_coded_stream.SetTotalBytesLimit(1024LL << 20, 512LL << 20);
-    model->ParseFromCodedStream(&model_coded_stream);
-    shape_inference::InferShapes(*model);
-    const ::onnx::GraphProto& graph = model->graph();
+    model.ParseFromCodedStream(&model_coded_stream);
+    ::onnx::shape_inference::InferShapes(model);
+    const ::onnx::GraphProto& graph = model.graph();
 
     // Prepare weight
     const char *weight_filename = "weight.onnc.bin";
-    prepareWeightFile(weight_filename);
+    prepareWeightFile(weight_filename, graph);
 
     // Init runtime
     Context *context = (Context *)ONNC_RUNTIME_init_runtime(weight_filename);
