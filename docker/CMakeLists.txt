@@ -18,6 +18,15 @@ add_custom_target(docker-build
     COMMAND docker stop onnc-runtime
 )
 
+add_custom_target(docker-build-debug
+    COMMAND docker start onnc-runtime
+    COMMAND docker exec -t -w /home/onnc/onnc-runtime/docker onnc-runtime mkdir -p build
+    COMMAND docker exec -t -w /home/onnc/onnc-runtime/docker/build onnc-runtime cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/home/onnc/onnc-runtime/docker/install ../..
+    COMMAND docker exec -t -w /home/onnc/onnc-runtime/docker/build onnc-runtime make -j4
+    COMMAND docker exec -t -w /home/onnc/onnc-runtime/docker/build onnc-runtime make install
+    COMMAND docker stop onnc-runtime
+)
+
 add_custom_target(docker-clean
     COMMAND docker start onnc-runtime
     COMMAND docker exec -t -w /home/onnc/onnc-runtime/docker onnc-runtime rm -rf ./build
