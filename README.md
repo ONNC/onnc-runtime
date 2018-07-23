@@ -11,6 +11,9 @@ Runtime for onnc compiler
 * gcc
 * g++
 * git
+* automake
+* protobuf
+* libtool
 * [Optional] docker
 
 ### Ubuntu - with apt
