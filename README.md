@@ -19,19 +19,7 @@ Runtime for onnc compiler
 ### Ubuntu - with apt
 
 ````
-sudo apt install make cmake g++ gcc python2.7 git protobuf-compiler libprotoc-dev python-pip python-dev python-setuptools
-````
-
-### Mac
-
-````
-
-````
-
-### Windows
-
-````
-
+sudo apt install make cmake g++ gcc python2.7  git protobuf-compiler libprotoc-dev python-pip python-dev python-setuptools
 ````
 
 # Setup
