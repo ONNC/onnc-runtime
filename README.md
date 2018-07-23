@@ -28,22 +28,9 @@ git submodule init
 git submodule update
 ````
 
-### Docker [Optional]
-
-````
-mkdir build
-cmake ..
-make docker-image
-make docker-container
-````
-
-`docker-image` will build our docker image to your local repository as `onnc/onnc-runtime`.
-
-`docker-container` will create a container and bind the project directory to `/home/onnc/onnc-runtime`. You can also create  container in your own way
-
 # Build
 
-### Legacy
+### Unix/Linux/Mac
 
 ````
 mkdir build
@@ -51,12 +38,13 @@ cmake ..
 make
 ````
 
-### Docker
+### Windows (MinGW)
 
 ````
 mkdir build
-cmake ..
-make
+cd build
+cmake .. -G "MinGW Makefiles"
+mingw32-make
 ````
 
 # Run
