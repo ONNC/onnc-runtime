@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-
+#include <math.h>
 void ONNC_RUNTIME_acos_float(
   void * restrict onnc_runtime_context
   ,const float * restrict input_input
@@ -13,4 +13,13 @@ void ONNC_RUNTIME_acos_float(
   ,int32_t output_output_ndim, const int32_t * restrict output_output_dims
   
 ) {
+	
+	int32_t size = 1;
+	int32_t numofdim = input_input_ndim;
+	for(int32_t i = 0 ; i < numofdim ; ++i){
+		size *= input_input_dims[i];
+	}
+	for(int32_t i = 0 ; i < size ; ++i){
+		output_output[i] = acosf(input_input[i]);
+	}
 }
