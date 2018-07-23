@@ -9,6 +9,7 @@ Runtime for onnc compiler
 * CMake >= 3.5
 * python 2.7
 * gcc
+* protobuf
 * g++
 * git
 * [Optional] docker
@@ -17,6 +18,18 @@ Runtime for onnc compiler
 
 ````
 sudo apt install make cmake g++ gcc python2.7 git protobuf-compiler libprotoc-dev python-pip python-dev python-setuptools
+````
+
+### Mac
+
+````
+
+````
+
+### Windows
+
+````
+
 ````
 
 # Setup
