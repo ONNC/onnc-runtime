@@ -9,7 +9,6 @@ Runtime for onnc compiler
 * CMake >= 3.5
 * python 2.7
 * gcc
-* protobuf
 * g++
 * git
 * automake
