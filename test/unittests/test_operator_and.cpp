@@ -1,14 +1,15 @@
 #include <skypat/skypat.h>
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 
 #define restrict __restrict__
 extern "C"{
-#include <operator/add.h>
+#include <operator/and.h>
 }
 #undef restrict
 
-SKYPAT_F(Operator_Add, non_broadcast){
+SKYPAT_F(Operator_And, non_broadcast){
     // Prepare
     srand(time(NULL));
     int32_t ndim = rand() % 3 + 1;
@@ -20,12 +21,12 @@ SKYPAT_F(Operator_Add, non_broadcast){
     }
     float A[dataSize], B[dataSize], C[dataSize], Ans[dataSize];
     for(int32_t i = 0; i < dataSize; ++i){
-        A[i] = rand() % 1000 / 100.0f;
-        B[i] = rand() % 1000 / 100.0f;
-        Ans[i] = A[i] + B[i];
+        A[i] = rand() % 2;
+        B[i] = rand() % 2;
+        Ans[i] = (int32_t)A[i] & (int32_t)B[i];
     }
     // Run
-    ONNC_RUNTIME_add_float(NULL
+    ONNC_RUNTIME_and_float(NULL
         ,A
         ,ndim,dims
         ,B
