@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <float.h>
 
-int32_t findIndex(index, axisDim, elementDistance){
+static int32_t findIndex(index, axisDim, elementDistance){
     int32_t newIndex = (index / (axisDim * elementDistance)) * elementDistance + index % elementDistance;
     return newIndex;
 }
