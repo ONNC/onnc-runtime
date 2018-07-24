@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/gather.h>
 
 #include <stdint.h>

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/tan.h>
 
 #include <stdint.h>

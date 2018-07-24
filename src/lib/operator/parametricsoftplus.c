@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/parametricsoftplus.h>
 
 #include <stdint.h>

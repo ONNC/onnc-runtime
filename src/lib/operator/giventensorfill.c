@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/giventensorfill.h>
 
 #include <stdint.h>

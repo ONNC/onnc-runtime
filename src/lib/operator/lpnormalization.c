@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/lpnormalization.h>
 
 #include <stdint.h>

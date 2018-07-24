@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/upsample.h>
 
 #include <stdint.h>

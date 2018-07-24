@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/scale.h>
 
 #include <stdint.h>

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/globalaveragepool.h>
 
 #include <stdint.h>

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/instancenormalization.h>
 
 #include <stdint.h>

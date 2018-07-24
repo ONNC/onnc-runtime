@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/pow.h>
 
 #include <stdint.h>

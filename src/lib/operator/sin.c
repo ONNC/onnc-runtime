@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/sin.h>
 
 #include <stdint.h>

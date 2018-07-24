@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/tanh.h>
 
 #include <stdint.h>

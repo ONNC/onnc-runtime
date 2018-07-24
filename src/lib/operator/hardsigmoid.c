@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/hardsigmoid.h>
 
 #include <stdint.h>

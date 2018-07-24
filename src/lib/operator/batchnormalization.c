@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/batchnormalization.h>
 
 #include <stdint.h>

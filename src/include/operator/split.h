@@ -8,6 +8,7 @@ void ONNC_RUNTIME_split_float(
   ,const float * restrict input_input
   ,int32_t input_input_ndim, const int32_t * restrict input_input_dims
   ,float ** restrict output_outputs
+  ,int32_t output_outputs_ntensor
   ,int32_t * output_outputs_ndim, const int32_t ** restrict output_outputs_dims
   ,int32_t axis
   ,int32_t * restrict split

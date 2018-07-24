@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/logsoftmax.h>
 
 #include <stdint.h>

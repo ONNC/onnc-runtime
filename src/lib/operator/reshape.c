@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/reshape.h>
 
 #include <stdint.h>

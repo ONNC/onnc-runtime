@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/meanvariancenormalization.h>
 
 #include <stdint.h>

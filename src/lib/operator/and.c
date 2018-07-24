@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/and.h>
 
 #include <stdint.h>

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/less.h>
 
 #include <stdint.h>

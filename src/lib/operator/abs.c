@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/abs.h>
 
 #include <stdint.h>

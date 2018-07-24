@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/greater.h>
 
 #include <stdint.h>

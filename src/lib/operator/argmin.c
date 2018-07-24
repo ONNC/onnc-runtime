@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/argmin.h>
 
 #include <stdint.h>

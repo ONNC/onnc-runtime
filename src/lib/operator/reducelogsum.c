@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/reducelogsum.h>
 
 #include <stdint.h>

@@ -51,6 +51,7 @@ def gen_compute_ir_substitution_hash(schema):
       if OpSchema.FormalParameterOption.Variadic == io_schema['option']:
         return [
           ',{ctype} ** restrict {prefix}_{io_name}'.format(prefix=prefix, ctype=ctype, **io_schema),
+          ',int32_t {prefix}_{io_name}_ntensor'.format(prefix=prefix, ctype=ctype, **io_schema),
           ',int32_t * {prefix}_{io_name}_ndim, const int32_t ** restrict {prefix}_{io_name}_dims'.format(prefix=prefix, ctype=ctype, **io_schema)
         ]
       else:
@@ -172,7 +173,8 @@ if __name__ == '__main__':
   operator_path = "operator"
   output_dir = 'out/'
   if not os.path.exists(output_dir + operator_path):
-    os.makedirs(output_dir + operator_path)
-  gen_runtime_h(operator_schemas, 'onnc-runtime.template.h', output_dir + 'onnc-runtime.h', operator_path)
-  gen_operator_runtime(operator_schemas, 'operator.template.h', output_dir + operator_path + '/${operator_name}.h')
-  gen_operator_runtime(operator_schemas, 'operator.template.c', output_dir + operator_path + '/${operator_name}.c')
+    os.makedirs(output_dir + 'include/' + operator_path)
+    os.makedirs(output_dir + 'lib/' + operator_path)
+  gen_runtime_h(operator_schemas, 'onnc-runtime.template.h', output_dir + 'include/onnc-runtime.h', operator_path)
+  gen_operator_runtime(operator_schemas, 'operator.template.h', output_dir + 'include/' + operator_path + '/${operator_name}.h')
+  gen_operator_runtime(operator_schemas, 'operator.template.c', output_dir + 'lib/' + operator_path + '/${operator_name}.c')

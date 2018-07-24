@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/conv.h>
 
 #include <stdint.h>

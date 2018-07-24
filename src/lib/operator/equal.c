@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/equal.h>
 
 #include <stdint.h>
