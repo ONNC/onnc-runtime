@@ -14,7 +14,7 @@ void ONNC_RUNTIME_sin_float(
   ,int32_t output_output_ndim, const int32_t * restrict output_output_dims
   
 ) {
-	int size = 1;
+	int32_t size = 1;
 	for(int32_t i = 0 ; i < input_input_ndim ; ++i){
 		size *= input_input_dims[i];
 	}
