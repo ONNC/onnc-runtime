@@ -12,8 +12,10 @@ function(operator_unittest arg)
 add_test(Operator_${arg} test_operator_${arg})
 endfunction(operator_unittest)
 
+
 operator_unittest("and")
 operator_unittest("add")
 operator_unittest("acos")
 operator_unittest("asin")
 operator_unittest("abs")
+operator_unittest("ceil")
