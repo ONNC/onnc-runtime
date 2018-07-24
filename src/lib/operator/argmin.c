@@ -6,9 +6,8 @@
 #include <stdbool.h>
 #include <float.h>
 
-int32_t findIndex(index, axisDim, elementDistance){
-    int32_t newIndex = (index / (axisDim * elementDistance)) * elementDistance + index % elementDistance;
-    return newIndex;
+static int32_t findIndex(index, axisDim, elementDistance){
+    return (index / (axisDim * elementDistance)) * elementDistance + index % elementDistance;
 }
 
 void ONNC_RUNTIME_argmin_float(
@@ -36,7 +35,7 @@ void ONNC_RUNTIME_argmin_float(
     while(try < size){
         /* Initialize try context*/
         int32_t index = try;
-        int32_t min = FLT_MAX;
+        float min = FLT_MAX;
         int32_t axisIndex = 0, minIndex = 0;
         while(axisIndex < axisDim){
             if(input_data[index] < min){
