@@ -18,6 +18,6 @@ void ONNC_RUNTIME_log_float(
 		size *= input_input_dims[i];
 	}
 	for(int32_t i = 0 ; i < size ; ++i){
-		output_output[i] = log(input_input[i]);
+		output_output[i] = logf(input_input[i]);
 	}
 }
