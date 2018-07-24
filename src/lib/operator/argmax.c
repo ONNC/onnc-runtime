@@ -1,6 +1,6 @@
 #pragma once
 
-//#include <operator/argmax.h>
+#include <operator/argmax.h>
 
 #include <stdint.h>
 #include <stdbool.h>
