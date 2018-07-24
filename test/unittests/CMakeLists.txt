@@ -14,3 +14,4 @@ endfunction(operator_unittest)
 
 operator_unittest(add)
 operator_unittest(abs)
+operator_unittest("cos")
