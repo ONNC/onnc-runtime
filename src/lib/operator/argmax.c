@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/argmax.h>
 
 #include <stdint.h>

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/slice.h>
 
 #include <stdint.h>

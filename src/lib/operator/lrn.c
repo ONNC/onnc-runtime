@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/lrn.h>
 
 #include <stdint.h>

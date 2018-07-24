@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/reducemax.h>
 
 #include <stdint.h>

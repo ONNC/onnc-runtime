@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/constantfill.h>
 
 #include <stdint.h>

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/gemm.h>
 
 #include <stdint.h>

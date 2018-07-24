@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/add.h>
 
 #include <stdint.h>

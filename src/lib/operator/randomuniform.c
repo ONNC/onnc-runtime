@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/randomuniform.h>
 
 #include <stdint.h>

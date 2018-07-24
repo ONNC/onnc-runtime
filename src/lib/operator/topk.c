@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/topk.h>
 
 #include <stdint.h>

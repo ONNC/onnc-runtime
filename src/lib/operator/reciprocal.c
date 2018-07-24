@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/reciprocal.h>
 
 #include <stdint.h>

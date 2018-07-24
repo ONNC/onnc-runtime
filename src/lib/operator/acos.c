@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/acos.h>
 
 #include <stdint.h>

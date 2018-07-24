@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/spacetodepth.h>
 
 #include <stdint.h>

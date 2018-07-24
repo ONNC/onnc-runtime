@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/crop.h>
 
 #include <stdint.h>

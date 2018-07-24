@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/reducel1.h>
 
 #include <stdint.h>

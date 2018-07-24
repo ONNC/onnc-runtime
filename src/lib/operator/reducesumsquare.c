@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/reducesumsquare.h>
 
 #include <stdint.h>

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/thresholdedrelu.h>
 
 #include <stdint.h>

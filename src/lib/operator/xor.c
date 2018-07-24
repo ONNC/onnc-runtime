@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/xor.h>
 
 #include <stdint.h>

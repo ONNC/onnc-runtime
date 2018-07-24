@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/reducesum.h>
 
 #include <stdint.h>

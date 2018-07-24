@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/neg.h>
 
 #include <stdint.h>

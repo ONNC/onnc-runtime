@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/rnn.h>
 
 #include <stdint.h>

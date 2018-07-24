@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/cos.h>
 
 #include <stdint.h>

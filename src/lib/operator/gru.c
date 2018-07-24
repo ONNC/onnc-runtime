@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/gru.h>
 
 #include <stdint.h>

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/mul.h>
 
 #include <stdint.h>

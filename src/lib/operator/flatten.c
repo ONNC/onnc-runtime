@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/flatten.h>
 
 #include <stdint.h>

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/loopindextensor.h>
 
 #include <stdint.h>

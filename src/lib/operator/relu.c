@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/relu.h>
 
 #include <stdint.h>

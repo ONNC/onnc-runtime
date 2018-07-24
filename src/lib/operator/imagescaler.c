@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/imagescaler.h>
 
 #include <stdint.h>
