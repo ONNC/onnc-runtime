@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <math.h>
 
 void ONNC_RUNTIME_exp_float(
   void * restrict onnc_runtime_context
@@ -13,12 +14,12 @@ void ONNC_RUNTIME_exp_float(
   ,int32_t output_output_ndim, const int32_t * restrict output_output_dims
 
 ) {
-    int size = 1;
-    for(int dim = 0 ; dim < input_input_ndim ; dim++){
+    int32_t size = 1;
+    for(int32_t dim = 0 ; dim < input_input_ndim ; dim++){
         size *= input_input_dims[dim];
     }
 
-    for(int index = 0 ; index < size ; index++){
-        output_output[index] = exp(input_input[index]);
+    for(int32_t index = 0 ; index < size ; index++){
+        output_output[index] = expf(input_input[index]);
     }
 }
