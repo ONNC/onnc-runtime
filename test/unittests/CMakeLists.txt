@@ -12,7 +12,6 @@ function(operator_unittest arg)
 add_test(Operator_${arg} test_operator_${arg})
 endfunction(operator_unittest)
 
-
 operator_unittest("and")
 operator_unittest("add")
 operator_unittest("acos")
@@ -28,3 +27,4 @@ operator_unittest("upsample")
 operator_unittest("sin")
 operator_unittest("mean")
 operator_unittest("reshape")
+operator_unittest("pow")
