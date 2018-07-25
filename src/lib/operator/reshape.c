@@ -11,6 +11,14 @@ void ONNC_RUNTIME_reshape_float(
   ,int32_t input_shape_ndim, const int32_t * restrict input_shape_dims
   ,float * restrict output_reshaped
   ,int32_t output_reshaped_ndim, const int32_t * restrict output_reshaped_dims
-  
+
 ) {
+    int32_t size = 1;
+    for(int32_t dim = 0 ; dim < input_data_ndim ; dim++){
+        size *= input_data_dims[dim];
+    }
+
+    for(int32_t index = 0 ; index < size ; index++){
+        output_reshape[index] = input_data[index];
+    }
 }
