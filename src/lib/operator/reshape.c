@@ -19,6 +19,6 @@ void ONNC_RUNTIME_reshape_float(
     }
 
     for(int32_t index = 0 ; index < size ; index++){
-        output_reshape[index] = input_data[index];
+        output_reshaped[index] = input_data[index];
     }
 }
