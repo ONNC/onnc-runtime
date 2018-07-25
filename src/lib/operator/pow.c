@@ -14,12 +14,12 @@ void ONNC_RUNTIME_pow_float(
   ,int32_t output_Z_ndim, const int32_t * restrict output_Z_dims
 
 ) {
-    int size = 1;
-    for(int dim = 0 ; dim < input_X_ndim ; dim++){
+    int32_t size = 1;
+    for(int32_t dim = 0 ; dim < input_X_ndim ; dim++){
         size *= input_X_dims[dim];
     }
 
-    for(int index = 0 ; index < size ; index++){
+    for(int32_t index = 0 ; index < size ; index++){
         output_Z[index] = pow(input_X[index], input_Y[index]);
     }
 }
