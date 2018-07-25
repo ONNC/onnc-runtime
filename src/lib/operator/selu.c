@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/selu.h>
 
 #include <stdint.h>

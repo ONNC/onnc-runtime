@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/unsqueeze.h>
 
 #include <stdint.h>

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/softmax.h>
 
 #include <stdint.h>

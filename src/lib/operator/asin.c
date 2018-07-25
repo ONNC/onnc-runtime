@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/asin.h>
 
 #include <stdint.h>

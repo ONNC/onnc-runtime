@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/reducemean.h>
 
 #include <stdint.h>

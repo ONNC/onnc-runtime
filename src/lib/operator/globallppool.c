@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/globallppool.h>
 
 #include <stdint.h>

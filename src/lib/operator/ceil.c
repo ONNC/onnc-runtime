@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/ceil.h>
 #include <math.h>
 #include <stdint.h>

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/constant.h>
 
 #include <stdint.h>

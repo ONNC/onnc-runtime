@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/matmul.h>
 
 #include <stdint.h>

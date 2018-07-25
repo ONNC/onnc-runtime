@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/multinomial.h>
 
 #include <stdint.h>

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/reducemin.h>
 
 #include <stdint.h>

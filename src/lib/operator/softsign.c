@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/softsign.h>
 
 #include <stdint.h>

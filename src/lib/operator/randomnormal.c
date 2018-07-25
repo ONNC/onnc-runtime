@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/randomnormal.h>
 
 #include <stdint.h>

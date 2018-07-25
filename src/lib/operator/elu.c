@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/elu.h>
 
 #include <stdint.h>

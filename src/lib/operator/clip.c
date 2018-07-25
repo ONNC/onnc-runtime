@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/clip.h>
 
 #include <stdint.h>

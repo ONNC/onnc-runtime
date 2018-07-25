@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/size.h>
 
 #include <stdint.h>

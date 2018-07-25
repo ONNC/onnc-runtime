@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/floor.h>
 
 #include <stdint.h>

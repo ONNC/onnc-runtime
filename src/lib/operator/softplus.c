@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/softplus.h>
 
 #include <stdint.h>

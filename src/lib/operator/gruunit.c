@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/gruunit.h>
 
 #include <stdint.h>

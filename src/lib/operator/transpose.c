@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/transpose.h>
 
 #include <stdint.h>

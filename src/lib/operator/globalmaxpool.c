@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/globalmaxpool.h>
 
 #include <stdint.h>

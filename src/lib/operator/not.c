@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/not.h>
 
 #include <stdint.h>

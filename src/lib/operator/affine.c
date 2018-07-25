@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/affine.h>
 
 #include <stdint.h>

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/identity.h>
 
 #include <stdint.h>

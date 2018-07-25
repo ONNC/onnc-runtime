@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/cast.h>
 
 #include <stdint.h>

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/div.h>
 
 #include <stdint.h>

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/sqrt.h>
 
 #include <stdint.h>
