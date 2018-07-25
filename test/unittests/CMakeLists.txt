@@ -12,7 +12,6 @@ function(operator_unittest arg)
 add_test(Operator_${arg} test_operator_${arg})
 endfunction(operator_unittest)
 
-
 operator_unittest("and")
 operator_unittest("add")
 operator_unittest("acos")
@@ -24,3 +23,4 @@ operator_unittest("equal")
 operator_unittest("cos")
 operator_unittest("argmax")
 operator_unittest("argmin")
+operator_unittest("pow")
