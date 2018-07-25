@@ -12,4 +12,22 @@ void ONNC_RUNTIME_hardsigmoid_float(
   ,float alpha
   ,float beta
 ) {
+
+	int32_t size = 1;
+	int32_t numofdim = input_X_ndim;
+
+	for(int32_t i = 0 ; i < numofdim ; ++i){
+		size *= input_X_dims[i];
+	}
+
+    //y = max(0, min(1, alpha * x + beta))
+    // the output range is 0.0f ~ 1.0f
+	for(int32_t i = 0 ; i < size ; ++i){
+	    float tmp_val = input_X[i];
+        tmp_val = alpha * tmp_val + beta;
+        tmp_val = tmp_val > 1.0f ? 1.0f : tmp_val;
+        tmp_val = tmp_val > 0.0f ? tmp_val : 0.0f;
+		output_Y[i] = tmp_val;
+	}
 }
+
