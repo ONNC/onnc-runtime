@@ -3,10 +3,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-static max(int32_t a, int32_t b){
-    return a > b ? a : b;
-}
-
 static void forLoop(
     float * restrict input_input, int32_t input_index,
     int32_t input_input_ndim, const int32_t * restrict input_input_dims,
@@ -90,7 +86,7 @@ void ONNC_RUNTIME_split_float(
                 0, axisDistance,
                 axis, split_base, output_split[splitIndex],
                 output_outputs, splitIndex, &output_col);
-                
+
         split_base = output_split[splitIndex];
     }
 }
