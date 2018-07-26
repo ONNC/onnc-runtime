@@ -15,9 +15,8 @@ void ONNC_RUNTIME_relu_float(
 ) {
 
 	int32_t size = 1;
-	int32_t numofdim = input_X_ndim;
 
-	for(int32_t i = 0 ; i < numofdim ; ++i){
+	for(int32_t i = 0 ; i < input_X_ndim ; ++i){
 		size *= input_X_dims[i];
 	}
 
