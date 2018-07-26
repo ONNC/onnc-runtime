@@ -29,4 +29,20 @@ void ONNC_RUNTIME_batchnormalization_float(
   ,float momentum
   ,int32_t spatial
 ) {
+  int32_t xN = input_X_dims[0], xC = input_X_dims[1];
+  int32_t elemSize = 1;
+  for(int32_t i = 2; i < input_X_ndim; ++i){
+    elemSize *= input_X_dims[i];
+  }
+  for(int32_t iN = 0; iN < xN; ++iN){
+    for(int32_t iC = 0; iC < xC; ++iC){
+      const float *pIMean = input_mean + iN * xC;
+      const float *pIVariance = input_var + iN * xC;
+      const float *pX = input_X + iN * xC * elemSize + iC * elemSize;
+      float *pY = output_Y + iN * xC * elemSize + iC * elemSize;
+      for(int32_t i = 0; i < elemSize; ++i){
+        pY[i] = input_scale[iC] * (pX[i] - pIMean[iC]) / sqrtf(pIVariance[iC] + epsilon) + input_B[iC];
+      }
+    }
+  }
 }
