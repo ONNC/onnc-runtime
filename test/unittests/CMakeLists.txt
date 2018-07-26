@@ -12,5 +12,4 @@ function(operator_unittest arg)
 add_test(Operator_${arg} test_operator_${arg})
 endfunction(operator_unittest)
 
-operator_unittest(add)
-operator_unittest(abs)
+operator_unittest("not")
