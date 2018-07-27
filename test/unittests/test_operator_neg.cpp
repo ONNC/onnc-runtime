@@ -12,32 +12,28 @@ extern "C"{
 SKYPAT_F(Operator_Neg, non_broadcast){
     // Prepare
     srand(time(NULL));
-    int32_t ndim = 2;
-    int32_t dims[2] = {
-        3, 3
-    };
-    float X[dims[0]][dims[1]] = {0};
-    float Y[dims[0]][dims[1]];
-    float testAns[dims[0]][dims[1]] = {0};
-    for (int32_t i = 0; i < dims[0]; i++){
-        for (int32_t j = 0; j < dims[1]; j++){
-            X[i][j] = rand();
-            testAns[i][j] = -X[i][j];
-        }
+    int32_t ndim = rand() % 3 + 1;
+    int32_t dims[ndim];
+    int32_t dataSize = 1;
+    for(int32_t i = 0; i < ndim; ++i){
+        dims[i] = rand() % 100 + 1;
+        dataSize *= dims[i];
     }
-    
+    float A[dataSize], B[dataSize], Ans[dataSize];
+    for(int32_t i = 0; i < dataSize; ++i){
+        A[i] = rand() % 1000 / 100;
+        Ans[i] = -A[i];
+    }
     // Run
     ONNC_RUNTIME_neg_float(NULL
-        ,(const float*)X
+        ,A
         ,ndim,dims
-        ,(float*)Y
+        ,B
         ,ndim,dims
     );
     // Check
-    for (int32_t i = 0; i < dims[0]; i++){
-        for (int32_t j = 0; j < dims[1]; j++){
-            EXPECT_EQ(Y[i][j], testAns[i][j]);
-        }
+    for(int32_t i = 0; i < dataSize; ++i){
+        EXPECT_EQ(B[i], Ans[i]);
     }
 }
 
