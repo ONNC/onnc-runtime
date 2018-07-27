@@ -1,5 +1,3 @@
-#pragma once
-
 #include <operator/${operator_name}.h>
 
 #include <stdint.h>
