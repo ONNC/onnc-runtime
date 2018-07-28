@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <cstring>
 #include <map>
-#include <onnx/onnx.pb.h>
+#include <onnx_pb.h>
 #include <onnx/shape_inference/implementation.h>
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
