@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-static float randomNormal(float a, float b, float seed);
+static float randomNormal(float a, float b);
 
 void ONNC_RUNTIME_randomnormal_float(
   void * restrict onnc_runtime_context  
@@ -26,18 +26,18 @@ void ONNC_RUNTIME_randomnormal_float(
     dataSize *= output_output_dims[i];
   }
 
+  srand(seed);
   for(int32_t i = 0; i < dataSize; i++){
-    output_output[i] = randomNormal(mean, scale, seed);
+    output_output[i] = randomNormal(mean, scale);
   }
 }
 
-static float randomNormal(float mean, float stddev, float seed)
+static float randomNormal(float mean, float stddev)
 {
-  srand(seed);
-  double pi = acos(-1);
-  float x = (float)random() / RAND_MAX + 1;
-  float y = (float)random() / RAND_MAX + 1;
-  float z = sqrt(-2 * log(x)) * cos(2 * pi * y);
+  double pi = acos(-1.0f);
+  float x = (float)random() / (RAND_MAX + 1.0f);
+  float y = (float)random() / (RAND_MAX + 1.0f);
+  float z = (float)sqrt(-2.0f * log(x)) * cos(2.0f * pi * y);
   z = mean + stddev *  z;
   
   return z;
