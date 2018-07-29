@@ -2,9 +2,6 @@ function(operator_unittest arg)
     add_executable(test_operator_${arg}
         test_operator_${arg}.cpp
     )
-    add_dependencies(test_operator_${arg}
-        Ext_SkyPat
-    )
     target_link_libraries(test_operator_${arg}
         onnc-runtime
         skypat
