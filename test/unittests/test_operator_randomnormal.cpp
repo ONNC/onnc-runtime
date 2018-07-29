@@ -20,18 +20,20 @@ SKYPAT_F(Operator_RandomNormal, non_broadcast){
     int32_t ndim = rand() % 3 + 1;
     int32_t dims[ndim];
     int32_t dataSize = 1;
-
+    int32_t shape[ndim];
+    int32_t number_of_shape = ndim;
+    
     printf("ndim:%d\ndims:\n", ndim);
 
     for(int32_t i = 0; i < ndim; ++i){
         dims[i] = rand() % 100 + 1;
+        shape[i] = dims[i];
         dataSize *= dims[i];
         printf("%d ", dims[i]);
     }
     printf("\nSamples:\n");
 
     float Output[dataSize], Ans[dataSize];
-    int32_t shape[ndim],number_of_shape = ndim;
 
     // Run
     ONNC_RUNTIME_randomnormal_float(NULL

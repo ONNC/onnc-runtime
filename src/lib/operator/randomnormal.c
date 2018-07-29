@@ -18,12 +18,10 @@ void ONNC_RUNTIME_randomnormal_float(
   ,int32_t * restrict shape
   ,int32_t number_of_shape
 ) {
-  number_of_shape = output_output_ndim;
 
   int32_t dataSize = 1;
   for(int32_t i = 0; i < output_output_ndim; i++){
-    shape[i] = output_output_dims[i];
-    dataSize *= output_output_dims[i];
+    dataSize *= shape[i];
   }
 
   srand(seed);
