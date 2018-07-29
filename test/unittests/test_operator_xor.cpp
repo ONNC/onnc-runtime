@@ -15,18 +15,18 @@ SKYPAT_F(Operator_Xor, non_broadcast){
     int32_t dims_A[4] = {2,2,1,2};
     float A[8] = {0,1,1,0,1,1,0,0};
 
-    int32_t ndim_B = 3;
-    int32_t dims_B[3] = {2,4,1};
+    int32_t ndim_B = 4;
+    int32_t dims_B[4] = {2,2,1,2};
     float B[8] = {0,1,1,0,1,0,0,1};
 
     int32_t ndim_C = 4;
-    int32_t dims_C[4] = {2,2,4,2};
-    float C[32];
+    int32_t dims_C[4] = {2,2,1,2};
+    float C[8];
 
     //testing by numpy
-    int32_t Ans[32] ={0,1,1,0,1,0,0,1,0,1,1,0,1,0,0,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1};
+    int32_t Ans[8] ={0,0,0,0,0,1,0,1};
 
-    int32_t dataSize = 32;
+    int32_t dataSize = 8;
 
     // Run
     ONNC_RUNTIME_xor_float(

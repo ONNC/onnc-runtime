@@ -3,15 +3,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-//function declaration
-static void tile_float(
-  const float * restrict input_input
-  ,int32_t input_input_ndim, const int32_t * restrict input_input_dims
-  ,const float * restrict input_repeats
-  ,float * restrict output_output
-  ,int32_t output_output_ndim, const int32_t * restrict output_output_dims
-);
-
 void ONNC_RUNTIME_xor_float(
   void * restrict onnc_runtime_context
   ,const float * restrict input_A
@@ -22,5 +13,15 @@ void ONNC_RUNTIME_xor_float(
   ,int32_t output_C_ndim, const int32_t * restrict output_C_dims
   
 ) {
-  
+  int32_t size = 1;
+  for(int32_t i = 0; i < input_A_ndim; ++i){
+    size *= input_A_dims[i];
+  }
+  for(int32_t i = 0; i < size; ++i){
+    if((bool)input_A[i] == (bool)input_B[i]){
+      output_C[i] = (float)false;
+    } else {
+      output_C[i] = (float)true;
+    }
+  }
 }
