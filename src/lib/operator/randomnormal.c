@@ -33,7 +33,7 @@ void ONNC_RUNTIME_randomnormal_float(
 
 static float randomNormal(float mean, float stddev)
 {
-  double pi = acos(-1.0f);
+  float pi = acosf(-1.0f);
   float x = (float)random() / (RAND_MAX + 1.0f);
   float y = (float)random() / (RAND_MAX + 1.0f);
   float z = (float)sqrt(-2.0f * log(x)) * cos(2.0f * pi * y);
