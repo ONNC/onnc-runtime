@@ -50,9 +50,9 @@ def gen_compute_ir_substitution_hash(schema):
     def cb(io_schema):
       if OpSchema.FormalParameterOption.Variadic == io_schema['option']:
         return [
-          ',{ctype} ** restrict {prefix}_{io_name}'.format(prefix=prefix, ctype=ctype, **io_schema),
+          ',{ctype} * const * restrict {prefix}_{io_name}'.format(prefix=prefix, ctype=ctype, **io_schema),
           ',int32_t {prefix}_{io_name}_ntensor'.format(prefix=prefix, ctype=ctype, **io_schema),
-          ',int32_t * {prefix}_{io_name}_ndim, const int32_t ** restrict {prefix}_{io_name}_dims'.format(prefix=prefix, ctype=ctype, **io_schema)
+          ',const int32_t * {prefix}_{io_name}_ndim, const int32_t * const * restrict {prefix}_{io_name}_dims'.format(prefix=prefix, ctype=ctype, **io_schema)
         ]
       else:
         return [
