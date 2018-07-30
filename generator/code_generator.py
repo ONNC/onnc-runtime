@@ -86,8 +86,8 @@ def gen_compute_ir_substitution_hash(schema):
     'strings': 'const char ** restrict',
     'float': 'float',
     'floats': 'float * restrict',
-    'tensor': 'void * restrict',
-    'graph': 'void * restrict',
+    'tensor': 'const void * restrict',
+    'graph': 'const void * restrict',
   }
   def attr_cb(attr):
     if attr['attr_type'][-1] == 's':

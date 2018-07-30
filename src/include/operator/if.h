@@ -10,6 +10,6 @@ void ONNC_RUNTIME_if_float(
   ,float * const * restrict output_outputs
   ,int32_t output_outputs_ntensor
   ,const int32_t * output_outputs_ndim, const int32_t * const * restrict output_outputs_dims
-  ,void * restrict else_branch
-  ,void * restrict then_branch
+  ,const void * restrict else_branch
+  ,const void * restrict then_branch
 );
