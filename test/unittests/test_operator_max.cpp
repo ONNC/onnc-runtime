@@ -30,13 +30,6 @@ SKYPAT_F(Operator_max, non_broadcast){
 	float output_max[6];
 	int output_max_ndim = 2;
 	const int output_max_dims[] = {2, 3};
-	/*
-	for(int i = 0 ; i < n ; ++i){
-		for(int j = 0 ; j < ten_len ; ++j){
-			input_data_0[i][j]  = (rand()%1000)+8.7;
-		}
-	}
-	*/
 	float Ans[ten_len] ;
 	for(int j = 0 ; j < ten_len ; ++j){
 		float mn = input_data_0[0][j];
