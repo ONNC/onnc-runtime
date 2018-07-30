@@ -112,6 +112,7 @@ void ONNC_RUNTIME_pad_float(
   ,int32_t number_of_pads
   ,float value
 ) {
+    // TODO: mode
     /* calculate axis_dis */
     int32_t axis_dis[input_data_ndim];
     calculate_axis_dis(input_data_ndim, input_data_dims, axis_dis);
