@@ -47,7 +47,11 @@ operator_unittest("tanh")
 operator_unittest("sum")
 operator_unittest("shape")
 operator_unittest("gemm")
+<<<<<<< HEAD
 operator_unittest("xor")
 operator_unittest("div")
 operator_unittest("instancenormalization")
 operator_unittest("less")
+=======
+operator_unittest("randomnormallike")
+>>>>>>> randomnormallike
