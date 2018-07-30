@@ -8,5 +8,5 @@ void ONNC_RUNTIME_constant_float(
   
   ,float * restrict output_output
   ,int32_t output_output_ndim, const int32_t * restrict output_output_dims
-  ,void * restrict value
+  ,const void * restrict value
 );

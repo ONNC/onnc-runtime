@@ -15,6 +15,6 @@ void ONNC_RUNTIME_loop_float(
   ,float * const * restrict output_v_final_and_scan_outputs
   ,int32_t output_v_final_and_scan_outputs_ntensor
   ,const int32_t * output_v_final_and_scan_outputs_ndim, const int32_t * const * restrict output_v_final_and_scan_outputs_dims
-  ,void * restrict body
+  ,const void * restrict body
 ) {
 }
