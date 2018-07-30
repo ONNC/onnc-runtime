@@ -17,4 +17,3 @@ add_compile_options(-ffast-math)
 
 add_subdirectory(src)
 add_subdirectory(test)
-add_subdirectory(interpreter)
