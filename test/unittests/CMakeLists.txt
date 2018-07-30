@@ -21,7 +21,6 @@ operator_unittest("log")
 operator_unittest("equal")
 operator_unittest("cos")
 operator_unittest("argmax")
-<<<<<<< HEAD
 operator_unittest("argmin")
 operator_unittest("upsample")
 operator_unittest("sin")
@@ -56,7 +55,4 @@ operator_unittest("randomnormallike")
 operator_unittest("randomnormal")
 operator_unittest("tile")
 operator_unittest("max")
-=======
-operator_unittest("min")
-operator_unittest("argmin")
->>>>>>> min
+operator_unittest("or")
