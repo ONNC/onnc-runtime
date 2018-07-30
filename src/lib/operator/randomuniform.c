@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <time.h>
 
 void ONNC_RUNTIME_randomuniform_float(
   void * restrict onnc_runtime_context
