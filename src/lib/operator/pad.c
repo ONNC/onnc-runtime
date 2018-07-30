@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+
 #define CONSTANT_MODE 0
 #define EDGE_MODE 1
 #define REFLECT_MODE 2
@@ -112,7 +113,8 @@ void ONNC_RUNTIME_pad_float(
   ,int32_t number_of_pads
   ,float value
 ) {
-    // TODO: mode
+    // TODO: negtive
+
     /* calculate axis_dis */
     int32_t axis_dis[input_data_ndim];
     calculate_axis_dis(input_data_ndim, input_data_dims, axis_dis);
