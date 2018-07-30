@@ -1,1 +1,0 @@
-cmd='./autogen.sh;COMMAND;./configure;--prefix=/home/hunter/Desktop/onnc-runtime/test/unittests/SkyPat/install'

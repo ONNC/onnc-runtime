@@ -11,6 +11,7 @@ endfunction(operator_unittest)
 
 operator_unittest("sub")
 operator_unittest("greater")
+operator_unittest("min")
 operator_unittest("and")
 operator_unittest("add")
 operator_unittest("acos")
