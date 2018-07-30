@@ -57,7 +57,7 @@ SKYPAT_F(Operator_InstanceNormalization, non_broadcast){
         ,epsilon
     );
     // Check
-    //Not Practical
+    // TODO: Not Practical
     printf("IN :\n");
     for(int32_t i = 0; i < dataSize; ++i){
         printf("%f \n", D[i]);
