@@ -10,10 +10,21 @@ addons:
       - g++
       - gcc
       - automake
+      - autoconf
+      - libtool
 
 compiler:
   - clang
   - gcc
+
+before_install:
+  - git clone https://github.com/skymizer/SkyPat.git
+  - cd SkyPat
+  - ./autogen.sh
+  - ./configure
+  - make
+  - sudo make install
+  - cd ..
 
 script: 
   - mkdir -p build
