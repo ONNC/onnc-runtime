@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include <float.h>
+
 void ONNC_RUNTIME_reducemax_float(
   void * restrict onnc_runtime_context
   ,const float * restrict input_data
@@ -64,7 +66,11 @@ void ONNC_RUNTIME_reducemax_float(
   int32_t outIndexCounter = 0;
 
   int32_t index = 0;
-  float max_temp;
+  float max_temp[nk_output_elem];
+  for(int32_t i = 0; i < nk_output_elem; i++){
+    max_temp[i] = FLT_MIN;
+  }
+
   //This 3 loop using top down algorithm to reduce the max 
   //locate index , transform to constiguous array index
   //ommit the AXES DIMENTION in order to obtain MAX in certain vector
@@ -73,7 +79,6 @@ void ONNC_RUNTIME_reducemax_float(
     outIndexCounter = 0;
     inDimCounter = 0;
     outDimCounter = 0;
-    max_temp = 0;
     while(inDimCounter < ndim){
       counter = 0;
       index = inIndexCounter / InDimStride[inDimCounter];
@@ -87,10 +92,10 @@ void ONNC_RUNTIME_reducemax_float(
       }
       inDimCounter++;
     }
-    if(input_data[i] >= max_temp){
+    if(input_data[i] >= max_temp[outIndexCounter]){
       //SOLUTION
-      max_temp = input_data[i];
-      result[outIndexCounter] = max_temp;
+      max_temp[outIndexCounter] = input_data[i];
+      result[outIndexCounter] = max_temp[outIndexCounter];
     }
   }
 
