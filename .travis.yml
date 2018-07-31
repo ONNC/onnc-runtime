@@ -1,6 +1,28 @@
-language: c++
+language: cpp
 install: cmake make
+sudo: require
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - make
+      - cmake
+      - g++
+      - gcc
+      - python2.7
+      - protobuf-compiler
+      - libprotoc-dev
+      - python-pip
+      - python-dev
+      - python-setuptools
+      - automake
 compiler:
   - clang
   - gcc
-script: cmake . && make && ctest
+script: 
+  - mkdir -p build
+  - cd build
+  - cmake .. 
+  - make
+  - ctest
