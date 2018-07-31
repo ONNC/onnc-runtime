@@ -1,5 +1,4 @@
 language: cpp
-install: cmake make
 sudo: require
 addons:
   apt:
