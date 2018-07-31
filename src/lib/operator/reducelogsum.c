@@ -1,4 +1,4 @@
-#include <operator/reducemean.h>
+#include <operator/reducelogsum.h>
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -40,7 +40,7 @@ static inline int64_t dim_to_offset(int32_t ndim, const int32_t * restrict dim,
   return offset;
 }
 
-void ONNC_RUNTIME_reducemean_float(
+void ONNC_RUNTIME_reducelogsum_float(
   void * restrict onnc_runtime_context
   ,const float * restrict input_data
   ,int32_t input_data_ndim, const int32_t * restrict input_data_dims
