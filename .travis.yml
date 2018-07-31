@@ -17,12 +17,14 @@ addons:
       - python-dev
       - python-setuptools
       - automake
+
 compiler:
   - clang
   - gcc
+
 script: 
   - mkdir -p build
   - cd build
-  - cmake .. 
+  - cmake ..
   - make
   - ctest
