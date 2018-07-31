@@ -31,4 +31,4 @@ script:
   - cd build
   - cmake ..
   - make
-  - ./test/unittests/test_operator_add
+  - ctest
