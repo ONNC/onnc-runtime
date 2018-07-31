@@ -2,7 +2,7 @@
 
 Runtime for onnc compiler
 
-https://api.travis-ci.org/ONNC/onnc.svg?branch=master
+![CI Status](https://api.travis-ci.org/ONNC/onnc.svg?branch=master)
 
 # Introduction
 
