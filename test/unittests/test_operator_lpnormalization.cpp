@@ -46,11 +46,11 @@ SKYPAT_F(Operator_Lpnormalization, non_broadcast){
         newArr = np.reshape(newArr , 12)
         print (newArr)
     */
-    printf("Sample :\n")
+    printf("Sample :\n");
     for(int32_t i = 0; i < outputSize; i++){
         printf("%10f \n", B[i]);
     }
-    printf("%d datas:\n", outputSize);
+    printf("%d data\n", outputSize);
 
 }
 
