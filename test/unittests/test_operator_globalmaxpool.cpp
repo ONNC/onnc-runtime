@@ -12,14 +12,18 @@ extern "C"{
 SKYPAT_F(Operator_globalmaxpool, non_broadcast){
     // Prepare
 	int32_t dataSize = 1 ;
-	const float input_X[] = {1, 2, 3, -100, 666, 8, 9, 7};
-	int32_t input_X_ndim = 3;
-	const int32_t input_X_dims[] = {2,2,2};
+	const float input_X[] = {1, 2, 3, -100, 666, 8, 9, 7,
+							 8, 7, 6, 5, 4, 3, -1, 100};
+	int32_t input_X_ndim = 5;
+	const int32_t input_X_dims[] = {2, 1, 2, 2, 2};
 	float output_Y[1000];
-	int32_t output_Y_ndim = 1;
-	const int32_t output_Y_dims[] = {1};
+	int32_t output_Y_ndim = 4;
+	const int32_t output_Y_dims[] = {2, 1, 1, 1};
 	
-	float Ans[] = {666};
+	float Ans[] = {666, 100};
+	for(int32_t i = 0 ; i < output_Y_ndim ; ++i){
+		dataSize *= output_Y_dims[i];
+	}
     // Run
     ONNC_RUNTIME_globalmaxpool_float(NULL,
 		input_X,
