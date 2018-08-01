@@ -52,7 +52,6 @@ SKYPAT_F(Operator_lppool, non_broadcast){
         EXPECT_TRUE( fabs ( output_Y[i] - Ans[i] ) < 1e-4 );
     }
 }
-
 int main(int argc, char *argv[]){
     skypat::Test::Initialize(argc, argv);
     skypat::Test::RunAll();
