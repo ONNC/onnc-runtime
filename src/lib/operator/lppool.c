@@ -97,7 +97,6 @@ static void Enu_Out(
 		}
 	}
 }
-
 void ONNC_RUNTIME_lppool_float(
   void * restrict onnc_runtime_context
   ,const float * restrict input_X
