@@ -2,9 +2,6 @@ function(operator_unittest arg)
     add_executable(test_operator_${arg}
         test_operator_${arg}.cpp
     )
-    add_dependencies(test_operator_${arg}
-        Ext_SkyPat
-    )
     target_link_libraries(test_operator_${arg}
         onnc-runtime
         skypat
@@ -12,6 +9,9 @@ function(operator_unittest arg)
 add_test(Operator_${arg} test_operator_${arg})
 endfunction(operator_unittest)
 
+operator_unittest("sub")
+operator_unittest("greater")
+operator_unittest("min")
 operator_unittest("and")
 operator_unittest("add")
 operator_unittest("acos")
@@ -48,3 +48,14 @@ operator_unittest("tanh")
 operator_unittest("sum")
 operator_unittest("shape")
 operator_unittest("gemm")
+operator_unittest("xor")
+operator_unittest("div")
+operator_unittest("instancenormalization")
+operator_unittest("less")
+operator_unittest("randomnormallike")
+operator_unittest("randomnormal")
+operator_unittest("tile")
+operator_unittest("max")
+operator_unittest("or")
+operator_unittest("transpose")
+operator_unittest("pad")

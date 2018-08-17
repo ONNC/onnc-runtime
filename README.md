@@ -2,6 +2,8 @@
 
 Runtime for onnc compiler
 
+![CI Status](https://api.travis-ci.org/ONNC/onnc.svg?branch=master)
+
 # Introduction
 
 # Prerequisites
