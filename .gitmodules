@@ -1,0 +1,6 @@
+[submodule "SkyPat"]
+	path = SkyPat
+	url = https://github.com/skymizer/SkyPat.git
+[submodule "onnx"]
+	path = onnx
+	url = https://github.com/onnx/onnx.git
