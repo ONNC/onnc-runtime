@@ -61,4 +61,4 @@ before_install:
 
 script: 
   - mkdir -p build && cd build
-  - cmake .. && make -j4 && ctest
+  - cmake .. && make -j4
