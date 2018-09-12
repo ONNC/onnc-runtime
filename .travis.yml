@@ -1,34 +1,64 @@
 language: cpp
-sudo: require
+sudo: required
+
+os:
+  - linux
+  - osx
+
+dist: trusty
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - make
-      - cmake
-      - g++
-      - gcc
-      - automake
-      - autoconf
-      - libtool
+      - gcc-5
+      - g++-5
+      - clang-3.8
+      - unzip
+      - cmake3
+
+
+notifications: 
+  email: false
+
+git:
+  submodules: true
+  depth: 1
 
 compiler:
   - clang
   - gcc
 
+cache:
+  directories:
+    - protobuf
+    - SkyPat
+    - onnx
+
 before_install:
-  - git clone https://github.com/skymizer/SkyPat.git
-  - cd SkyPat
-  - ./autogen.sh
-  - ./configure
-  - make
-  - sudo make install
+  # Update gcc & clang
+  - if [[ \"$TRAVIS_OS_NAME\" == \"linux\" ]]; then
+    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 1 &&
+    sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 1 &&
+    sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-3.8 1 &&
+    sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-3.8 1 &&
+    sudo update-alternatives --set gcc /usr/bin/gcc-5 &&
+    sudo update-alternatives --set g++ /usr/bin/g++-5 &&
+    sudo update-alternatives --set clang /usr/bin/clang-3.8 &&
+    sudo update-alternatives --set clang++ /usr/bin/clang++-3.8;
+    fi
+  # protobuf
+  - if [[ -d protobuf/.git ]]; then echo "Use cached protobuf"; else rm -rf protobuf &&  git clone https://github.com/protocolbuffers/protobuf.git; fi
+  - cd protobuf && git checkout v3.6.1
+  - git submodule update --init --recursive
+  - ./autogen.sh && ./configure && sudo make -j4 install
+  - if [[ \"$TRAVIS_OS_NAME\" == \"linux\" ]]; then sudo ldconfig; fi
   - cd ..
+  # SkyPat
+  - cd SkyPat && ./autogen.sh && ./configure && sudo make -j4 install && cd ..
+  # onnx
+  - cd onnx && mkdir -p build && cd build && cmake .. && sudo make -j4 install && cd ../..
 
 script: 
-  - mkdir -p build
-  - cd build
-  - cmake ..
-  - make
-  - ctest
+  - mkdir -p build && cd build
+  - cmake .. && make -j4 && ctest
