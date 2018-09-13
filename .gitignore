@@ -1,4 +1,4 @@
-build/
+build*/
 install/
 .vscode
 *.onnx
@@ -6,3 +6,5 @@ install/
 *.o
 test_data*
 weight.onnc.bin
+.bash*
+.vim*

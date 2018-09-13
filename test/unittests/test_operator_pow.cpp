@@ -36,7 +36,7 @@ SKYPAT_F(Operator_Pow, non_broadcast){
     );
     // Check
     for(int32_t i = 0; i < dataSize; ++i){
-        EXPECT_EQ(C[i], Ans[i]);
+        EXPECT_LE(abs((int)(C[i] * 1000000) - (int)(Ans[i] * 1000000)), 1);
     }
 }
 
