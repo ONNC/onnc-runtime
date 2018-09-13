@@ -48,16 +48,32 @@ before_install:
     sudo update-alternatives --set clang++ /usr/bin/clang++-3.8;
     fi
   # protobuf
-  - if [[ -d protobuf/.git ]]; then echo "Use cached protobuf"; else rm -rf protobuf &&  git clone https://github.com/protocolbuffers/protobuf.git; fi
-  - cd protobuf && git checkout v3.6.1
-  - git submodule update --init --recursive
-  - ./autogen.sh && ./configure && sudo make -j4 install
+  - if [[ -d protobuf/.git ]]; then
+    cd protobuf;
+    else
+    rm -rf protobuf &&
+    git clone https://github.com/protocolbuffers/protobuf.git &&
+    cd protobuf && git checkout v3.6.1 &&
+    git submodule update --init --recursive &&
+    ./autogen.sh && ./configure;
+    fi
+  - sudo make -j4 install
   - if [[ \"$TRAVIS_OS_NAME\" == \"linux\" ]]; then sudo ldconfig; fi
   - cd ..
   # SkyPat
-  - cd SkyPat && ./autogen.sh && ./configure && sudo make -j4 install && cd ..
+  - if [[ -e SkyPat/configure ]]; then
+    cd SkyPat;
+    else
+    cd SkyPat && ./autogen.sh && ./configure;
+    fi
+  - sudo make -j4 install && cd ..
   # onnx
-  - cd onnx && mkdir -p build && cd build && cmake .. && sudo make -j4 install && cd ../..
+  - if [[ -e onnx/Makefile ]]; then
+    cd onnx;
+    else
+    cd onnx && cmake .;
+    fi
+  - sudo make -j4 install && cd ..
 
 script: 
   - mkdir -p build && cd build
