@@ -36,7 +36,7 @@ SKYPAT_F(Operator_Div, non_broadcast){
     );
     // Check
     for(int32_t i = 0; i < dataSize; ++i){
-        EXPECT_TRUE(abs(C[i]-Ans[i] <= 1e-6));
+        EXPECT_TRUE(abs(C[i]-Ans[i]) <= 1e-6);
     }
 }
 
