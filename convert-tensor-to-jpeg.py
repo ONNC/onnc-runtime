@@ -28,8 +28,7 @@ def main():
     assert input_tensor.dims[0] == 1 and input_tensor.dims[1] == 3
 
     # create output image for writing
-    width_dim, height_dim = 2, 3
-    image_width, image_height = input_tensor.dims[width_dim], input_tensor.dims[height_dim]
+    image_width, image_height = input_tensor.dims[3], input_tensor.dims[2]
     pixel_count = image_width * image_height
     output_image = Image.new('RGB', (image_width, image_height), 'black')
     output_pixels = output_image.load()
@@ -41,8 +40,8 @@ def main():
 
     input_tensor_array = struct.unpack('%sf' % size, input_tensor.raw_data)
     offset = 0
-    for row in range(input_tensor.dims[width_dim]):
-        for col in range(input_tensor.dims[height_dim]):
+    for row in range(image_height):
+        for col in range(image_width):
             r = int(input_tensor_array[offset])
             g = int(input_tensor_array[offset + pixel_count])
             b = int(input_tensor_array[offset + 2 * pixel_count])
